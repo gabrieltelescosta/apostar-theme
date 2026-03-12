@@ -1,4 +1,4 @@
-import type { GlobalConfig, PageConfig } from '../types/config'
+import type { GlobalConfig, PageConfig, SupabaseConfig } from '../types/config'
 import { logger } from './logger'
 import { storageGet, storageSet } from '../utils/storage'
 
@@ -63,6 +63,41 @@ export async function loadGlobalConfig(): Promise<GlobalConfig> {
   }
 }
 
+async function loadFromSupabase(
+  cfg: SupabaseConfig,
+  page: string,
+): Promise<PageConfig | null> {
+  const table = cfg.table ?? 'widget_configs'
+  const params = new URLSearchParams({
+    select: 'page,modules',
+    page: `eq.${page}`,
+    active: 'eq.true',
+  })
+
+  try {
+    const res = await fetch(`${cfg.url}/rest/v1/${table}?${params}`, {
+      headers: {
+        apikey: cfg.anonKey,
+        Authorization: `Bearer ${cfg.anonKey}`,
+      },
+    })
+
+    if (!res.ok) throw new Error(`Supabase HTTP ${res.status}`)
+
+    const rows: { page: string; modules: PageConfig['modules'] }[] = await res.json()
+
+    if (rows.length > 0) {
+      logger.info(`Supabase config for "${page}" loaded.`)
+      return { page: rows[0].page, modules: rows[0].modules }
+    }
+
+    return null
+  } catch (err) {
+    logger.warn('Supabase config fetch failed, falling back to static.', err)
+    return null
+  }
+}
+
 export async function loadPageConfig(): Promise<PageConfig> {
   const global = await loadGlobalConfig()
   const base = global.cdnBase || resolveBaseUrl()
@@ -78,7 +113,14 @@ export async function loadPageConfig(): Promise<PageConfig> {
 
     let data: PageConfig | null = null
 
-    if (global.configEndpoint) {
+    if (global.supabase?.url && global.supabase?.anonKey) {
+      data = await loadFromSupabase(global.supabase, page)
+      if (!data) {
+        data = await loadFromSupabase(global.supabase, 'default')
+      }
+    }
+
+    if (!data && global.configEndpoint) {
       const res = await fetch(`${global.configEndpoint}?page=${page}`)
       if (res.ok) data = await res.json()
     }
