@@ -18,24 +18,12 @@ export default class CashbackBarModule extends BaseModule {
   selfManaged = true
 
   private resizeObserver: ResizeObserver | null = null
-  private storageKey = ''
 
   async init(config: ModuleEntry): Promise<void> {
     await super.init(config)
 
     injectStyles(styles, 'apw-styles-cashback-bar')
     this.injectFont()
-
-    this.storageKey = this.getTodayKey()
-
-    try {
-      if (localStorage.getItem(this.storageKey)) {
-        logger.info('Cashback bar hidden for today.')
-        return
-      }
-    } catch {
-      // localStorage unavailable
-    }
 
     try {
       const userId = await this.waitForSmarticoUserId()
@@ -99,14 +87,6 @@ export default class CashbackBarModule extends BaseModule {
       'header.header.header-layout',
       'header.header-mobile-layout',
     ])
-  }
-
-  private getTodayKey(): string {
-    const now = new Date()
-    const y = now.getFullYear()
-    const m = String(now.getMonth() + 1).padStart(2, '0')
-    const d = String(now.getDate()).padStart(2, '0')
-    return `cashbackBarHidden_${y}-${m}-${d}`
   }
 
   private injectFont(): void {
@@ -182,14 +162,6 @@ export default class CashbackBarModule extends BaseModule {
     }
   }
 
-  private markHiddenToday(): void {
-    try {
-      localStorage.setItem(this.storageKey, '1')
-    } catch {
-      // localStorage unavailable
-    }
-  }
-
   private formatBRL(cents: number): string {
     return (cents / 100).toLocaleString('pt-BR', {
       style: 'currency',
@@ -261,9 +233,9 @@ export default class CashbackBarModule extends BaseModule {
 
     bar.addEventListener('click', (e) => {
       if ((e.target as HTMLElement).closest('.close')) return
-      this.markHiddenToday()
       this.openSmartico()
       bar.remove()
+      this.createPill(amount)
     })
 
     const close = bar.querySelector('.close')
