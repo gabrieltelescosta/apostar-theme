@@ -2,8 +2,7 @@ import { bootstrap, destroyAll } from './core/bootstrap'
 import { moduleRegistry } from './core/module-registry'
 import { eventBus } from './core/event-bus'
 
-// Registrar modulos aqui:
-// moduleRegistry.register('nome', () => import('./modules/nome/index'))
+moduleRegistry.register('cashback-bar', () => import('./modules/cashback-bar/index'))
 
 declare global {
   interface Window {

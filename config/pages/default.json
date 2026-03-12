@@ -1,4 +1,13 @@
 {
   "page": "default",
-  "modules": []
+  "modules": [
+    {
+      "type": "cashback-bar",
+      "data": {
+        "smarticoAction": "dp:gf_section&id=1297",
+        "apiEndpoint": "https://api-internal.apostar.app/api/my-cashback",
+        "headerSelectors": ["header.header.header-layout", "header.header-mobile-layout"]
+      }
+    }
+  ]
 }

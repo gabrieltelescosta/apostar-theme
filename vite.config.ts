@@ -8,7 +8,7 @@ export default defineConfig({
       '@': resolve(__dirname, 'src'),
     },
   },
-  publicDir: 'config-public',
+  publicDir: false,
   server: {
     fs: {
       allow: ['.'],
@@ -18,11 +18,9 @@ export default defineConfig({
     {
       name: 'copy-config',
       writeBundle() {
-        cpSync(
-          resolve(__dirname, 'config'),
-          resolve(__dirname, 'cdn.mnply.com.br/apostar/config'),
-          { recursive: true },
-        )
+        cpSync(resolve(__dirname, 'config'), resolve(__dirname, 'dist/config'), {
+          recursive: true,
+        })
       },
     },
     {
@@ -43,7 +41,7 @@ export default defineConfig({
     },
   ],
   build: {
-    outDir: 'cdn.mnply.com.br/apostar',
+    outDir: 'dist',
     emptyOutDir: true,
     target: 'es2020',
     rollupOptions: {
