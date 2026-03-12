@@ -52,8 +52,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: $spacing-sm;
   padding: $spacing-sm $spacing-lg;
+
+  > * + * { margin-left: $spacing-sm; }
   border: none;
   border-radius: $radius-md;
   font-family: $font-family;

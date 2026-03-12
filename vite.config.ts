@@ -43,7 +43,7 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
-    target: 'es2020',
+    target: 'es2017',
     rollupOptions: {
       input: resolve(__dirname, 'src/widget.ts'),
       output: {
