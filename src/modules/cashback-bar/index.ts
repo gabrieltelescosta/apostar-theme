@@ -246,9 +246,9 @@ export default class CashbackBarModule extends BaseModule {
         <div class="message">
           <span class="icon">🎁</span>
           <span class="text">
-            Você tem
+            <span>Você tem</span>
             <span class="value">${this.formatBRL(amount)}</span>
-            de Cashback!
+            <span>de Cashback!</span>
           </span>
         </div>
         <span class="close">✕</span>
