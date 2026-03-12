@@ -22,18 +22,23 @@ export default class CashbackBarModule extends BaseModule {
 
   async init(config: ModuleEntry): Promise<void> {
     await super.init(config)
+    alert('[APW] cashback-bar init')
 
     injectStyles(styles, 'apw-styles-cashback-bar')
     this.injectFont()
 
     try {
+      alert(`[APW] waiting header: ${this.headerSelectors.join(', ')}`)
       const header = await this.waitForHeader()
-      if (!header) return
-      if (document.getElementById(BAR_ID)) return
+      if (!header) { alert('[APW] header not found'); return }
+      alert(`[APW] header found: ${header.tagName}.${header.className}`)
+      if (document.getElementById(BAR_ID)) { alert('[APW] bar already exists'); return }
 
       const bar = this.createBar(4250)
       header.after(bar)
+      alert('[APW] bar rendered!')
     } catch (err) {
+      alert(`[APW] ERROR: ${err}`)
       logger.error('Cashback widget error:', err)
     }
   }
