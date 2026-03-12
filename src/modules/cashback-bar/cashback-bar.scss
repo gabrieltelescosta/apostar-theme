@@ -213,7 +213,7 @@ $pill-id: 'apostar-cashback-widget-pill';
   top: 155px;
   z-index: $z-modal - 2;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 56px;
@@ -241,10 +241,16 @@ $pill-id: 'apostar-cashback-widget-pill';
   }
 
   &:hover {
+    flex-direction: row;
     width: 230px;
     padding: 10px 14px;
     background: linear-gradient(135deg, #0f2a4a 0%, #072040 60%, #061224 100%);
     border-color: rgba($cb-gold, 0.6);
+  }
+
+  &:hover .pill-value {
+    margin-top: 0;
+    margin-left: 6px;
   }
 
   .pill-text {
@@ -273,7 +279,7 @@ $pill-id: 'apostar-cashback-widget-pill';
   }
 
   .pill-value {
-    margin-left: 6px;
+    margin-top: 4px;
     font-size: 0.58rem;
     font-weight: 800;
     color: $cb-gold;
