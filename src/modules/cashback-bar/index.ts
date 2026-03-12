@@ -38,18 +38,30 @@ export default class CashbackBarModule extends BaseModule {
     }
 
     try {
+      const userId = await this.waitForSmarticoUserId()
+      if (!userId) return
+
+      const data = await this.getCashback(userId)
+      if (!data || typeof data.amount !== 'number') return
+      if (!data.can_cashout || data.amount <= 0) return
+
       const header = await this.waitForHeader()
       if (!header) return
       if (document.getElementById(BAR_ID)) return
 
-      const userId = await this.waitForSmarticoUserId()
-      if (!userId) return
-
-      const cashback = await this.getCashback(userId)
-      if (!cashback || cashback.amount <= 0) return
-
-      const bar = this.createBar(cashback.amount)
+      const bar = this.createBar(data.amount)
       header.after(bar)
+
+      const updateStickyTop = () => {
+        bar.style.top = header.offsetHeight + 'px'
+      }
+      updateStickyTop()
+
+      if (window.ResizeObserver) {
+        this.resizeObserver = new ResizeObserver(updateStickyTop)
+        this.resizeObserver.observe(header)
+      }
+
       logger.info('Cashback bar rendered.')
     } catch (err) {
       logger.error('Cashback widget error:', err)
@@ -188,10 +200,6 @@ export default class CashbackBarModule extends BaseModule {
     const pill = document.createElement('div')
     pill.id = PILL_ID
 
-    const header = this.getHeader()
-    const topPos = header ? header.offsetHeight + 12 : 70
-    pill.style.top = `${topPos}px`
-
     pill.innerHTML = `
       <span class="pill-icon">🎁</span>
       <span class="pill-value">${this.formatBRL(amount)}</span>
@@ -203,23 +211,12 @@ export default class CashbackBarModule extends BaseModule {
     const tooltip = document.createElement('div')
     tooltip.id = `${PILL_ID}-tooltip`
     tooltip.textContent = 'Cashback aqui! 💰'
-    tooltip.style.top = `${topPos + 14}px`
     document.body.appendChild(tooltip)
 
     setTimeout(() => {
       tooltip.classList.add('fade-out')
       setTimeout(() => tooltip.remove(), 600)
     }, 8000)
-
-    if (window.ResizeObserver && header) {
-      this.resizeObserver = new ResizeObserver(() => {
-        const t = header.offsetHeight + 12
-        pill.style.top = `${t}px`
-        const tip = document.getElementById(`${PILL_ID}-tooltip`)
-        if (tip) tip.style.top = `${t + 14}px`
-      })
-      this.resizeObserver.observe(header)
-    }
   }
 
   private createBar(amount: number): HTMLElement {
