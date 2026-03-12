@@ -134,26 +134,24 @@ async function loadAndRenderModule(entry: ModuleEntry) {
 }
 
 export async function bootstrap() {
-  alert('[APW] bootstrap started')
+  logger.info('Widget bootstrap started.')
 
   const globalCfg = await loadGlobalConfig()
-  alert(`[APW] globalCfg loaded: ${JSON.stringify(globalCfg).slice(0, 100)}`)
   enableDebug(globalCfg.debug)
 
   injectStyles(globalStyles, 'apw-global-styles')
 
   const pageCfg = await loadPageConfig()
-  alert(`[APW] pageCfg: ${pageCfg.modules.length} modules`)
 
   if (pageCfg.modules.length === 0) {
-    alert('[APW] No modules found, stopping')
+    logger.info('No modules to render for this page.')
     return
   }
 
   await Promise.allSettled(pageCfg.modules.map(loadAndRenderModule))
 
-  alert('[APW] All modules rendered')
   eventBus.emit('widget:ready')
+  logger.info('Widget bootstrap complete.')
 }
 
 export function destroyAll() {

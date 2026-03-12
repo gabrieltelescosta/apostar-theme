@@ -1,5 +1,3 @@
-alert('[APW] widget.js loaded')
-
 import { bootstrap, destroyAll } from './core/bootstrap'
 import { moduleRegistry } from './core/module-registry'
 import { eventBus } from './core/event-bus'

@@ -11,10 +11,11 @@ function resolveBaseUrl(): string {
 
   if (globalConfig?.cdnBase) return globalConfig.cdnBase
 
-  const script = document.querySelector<HTMLScriptElement>('script[src*="widget.js"]')
-  if (script?.src) {
-    const url = new URL(script.src)
-    return `${url.origin}${url.pathname.replace(/\/widget\.js$/, '')}`
+  try {
+    const url = new URL(import.meta.url)
+    return `${url.origin}${url.pathname.replace(/\/widget\.js$/, '').replace(/\/modules\/.*$/, '')}`
+  } catch {
+    // import.meta.url unavailable
   }
 
   return ''
@@ -69,12 +70,10 @@ export async function loadPageConfig(): Promise<PageConfig> {
   const page = detectPage()
   const cacheKey = `apw:page-config:${page}`
 
-  alert(`[APW] loadPageConfig: base="${base}" page="${page}"`)
-
   try {
     const cached = storageGet<PageConfig>(cacheKey)
     if (cached) {
-      alert(`[APW] cache hit: ${cached.modules.length} modules`)
+      logger.info(`Page config "${page}" loaded from cache.`)
       return cached
     }
 
@@ -86,22 +85,13 @@ export async function loadPageConfig(): Promise<PageConfig> {
     }
 
     if (!data) {
-      const pageUrl = `${base}/config/pages/${page}.json`
-      alert(`[APW] fetching: ${pageUrl}`)
-      try {
-        const res = await fetch(pageUrl)
-        alert(`[APW] page fetch status: ${res.status}`)
-        if (res.ok) {
-          data = await res.json()
-        } else {
-          const defaultUrl = `${base}/config/pages/default.json`
-          alert(`[APW] fallback: ${defaultUrl}`)
-          const fallback = await fetch(defaultUrl)
-          alert(`[APW] default fetch status: ${fallback.status}`)
-          if (fallback.ok) data = await fallback.json()
-        }
-      } catch (fetchErr) {
-        alert(`[APW] fetch error: ${fetchErr}`)
+      const res = await fetch(`${base}/config/pages/${page}.json`)
+      if (res.ok) {
+        data = await res.json()
+      } else {
+        logger.warn(`No config for "${page}", falling back to default.`)
+        const fallback = await fetch(`${base}/config/pages/default.json`)
+        if (fallback.ok) data = await fallback.json()
       }
     }
 
@@ -109,11 +99,11 @@ export async function loadPageConfig(): Promise<PageConfig> {
       data = { page, modules: [] }
     }
 
-    alert(`[APW] final: ${data.modules.length} modules`)
     storageSet(cacheKey, data, global.cacheTTL ?? 300)
+    logger.info(`Page config "${page}" loaded.`, data)
     return data
   } catch (err) {
-    alert(`[APW] loadPageConfig ERROR: ${err}`)
+    logger.error(`Failed to load page config for "${page}":`, err)
     return { page, modules: [] }
   }
 }
