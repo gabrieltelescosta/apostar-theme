@@ -213,6 +213,7 @@ export default class CashbackBarModule extends BaseModule {
     tooltip.id = `${PILL_ID}-tooltip`
     tooltip.textContent = 'Cashback aqui! 💰'
     document.body.appendChild(tooltip)
+    tooltip.style.right = (pill.offsetWidth + 6) + 'px'
 
     setTimeout(() => {
       tooltip.classList.add('fade-out')
