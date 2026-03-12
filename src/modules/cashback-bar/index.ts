@@ -202,6 +202,7 @@ export default class CashbackBarModule extends BaseModule {
 
     pill.innerHTML = `
       <span class="pill-icon">🎁</span>
+      <span class="pill-text">Você tem cashback!</span>
       <span class="pill-value">${this.formatBRL(amount)}</span>
     `
 
