@@ -47,9 +47,8 @@ export default defineConfig({
     rollupOptions: {
       input: resolve(__dirname, 'src/widget.ts'),
       output: {
-        format: 'iife',
-        inlineDynamicImports: true,
         entryFileNames: 'widget.js',
+        chunkFileNames: 'modules/[name].[hash].js',
         assetFileNames: 'assets/[name].[hash][extname]',
       },
     },

@@ -6,30 +6,16 @@ let globalConfig: GlobalConfig | null = null
 
 const isDev = import.meta.env?.DEV ?? false
 
-const currentScriptSrc = (() => {
-  const cs = document.currentScript as HTMLScriptElement | null
-  if (cs && cs.src) return cs.src
-
-  const scripts = document.querySelectorAll<HTMLScriptElement>('script[src*="widget.js"]')
-  for (let i = 0; i < scripts.length; i++) {
-    if (scripts[i].src.indexOf('apostar') !== -1) return scripts[i].src
-  }
-
-  return ''
-})()
-
 function resolveBaseUrl(): string {
   if (isDev) return ''
 
   if (globalConfig?.cdnBase) return globalConfig.cdnBase
 
   try {
-    if (currentScriptSrc) {
-      const url = new URL(currentScriptSrc)
-      return `${url.origin}${url.pathname.replace(/\/widget\.js$/, '')}`
-    }
+    const url = new URL(import.meta.url)
+    return `${url.origin}${url.pathname.replace(/\/widget\.js$/, '').replace(/\/modules\/.*$/, '')}`
   } catch {
-    // URL parsing failed
+    // import.meta.url unavailable
   }
 
   return ''
