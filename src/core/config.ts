@@ -69,10 +69,12 @@ export async function loadPageConfig(): Promise<PageConfig> {
   const page = detectPage()
   const cacheKey = `apw:page-config:${page}`
 
+  alert(`[APW] loadPageConfig: base="${base}" page="${page}"`)
+
   try {
     const cached = storageGet<PageConfig>(cacheKey)
     if (cached) {
-      logger.info(`Page config "${page}" loaded from cache.`)
+      alert(`[APW] cache hit: ${cached.modules.length} modules`)
       return cached
     }
 
@@ -84,13 +86,22 @@ export async function loadPageConfig(): Promise<PageConfig> {
     }
 
     if (!data) {
-      const res = await fetch(`${base}/config/pages/${page}.json`)
-      if (res.ok) {
-        data = await res.json()
-      } else {
-        logger.warn(`No config for "${page}", falling back to default.`)
-        const fallback = await fetch(`${base}/config/pages/default.json`)
-        if (fallback.ok) data = await fallback.json()
+      const pageUrl = `${base}/config/pages/${page}.json`
+      alert(`[APW] fetching: ${pageUrl}`)
+      try {
+        const res = await fetch(pageUrl)
+        alert(`[APW] page fetch status: ${res.status}`)
+        if (res.ok) {
+          data = await res.json()
+        } else {
+          const defaultUrl = `${base}/config/pages/default.json`
+          alert(`[APW] fallback: ${defaultUrl}`)
+          const fallback = await fetch(defaultUrl)
+          alert(`[APW] default fetch status: ${fallback.status}`)
+          if (fallback.ok) data = await fallback.json()
+        }
+      } catch (fetchErr) {
+        alert(`[APW] fetch error: ${fetchErr}`)
       }
     }
 
@@ -98,11 +109,11 @@ export async function loadPageConfig(): Promise<PageConfig> {
       data = { page, modules: [] }
     }
 
+    alert(`[APW] final: ${data.modules.length} modules`)
     storageSet(cacheKey, data, global.cacheTTL ?? 300)
-    logger.info(`Page config "${page}" loaded.`, data)
     return data
   } catch (err) {
-    logger.error(`Failed to load page config for "${page}":`, err)
+    alert(`[APW] loadPageConfig ERROR: ${err}`)
     return { page, modules: [] }
   }
 }
