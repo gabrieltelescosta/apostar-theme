@@ -23,30 +23,15 @@ export default class CashbackBarModule extends BaseModule {
   async init(config: ModuleEntry): Promise<void> {
     await super.init(config)
 
-    this.storageKey = this.getTodayKey()
-
-    try {
-      if (localStorage.getItem(this.storageKey)) return
-    } catch {
-      // localStorage unavailable
-    }
-
     injectStyles(styles, 'apw-styles-cashback-bar')
     this.injectFont()
 
     try {
-      const userId = await this.waitForSmarticoUserId()
-      if (!userId) return
-
-      const data = await this.getCashback(userId)
-      if (!data || typeof data.amount !== 'number') return
-      if (!data.can_cashout || data.amount <= 0) return
-
       const header = await this.waitForHeader()
       if (!header) return
       if (document.getElementById(BAR_ID)) return
 
-      const bar = this.createBar(data.amount)
+      const bar = this.createBar(4250)
       header.after(bar)
     } catch (err) {
       logger.error('Cashback widget error:', err)
