@@ -1,4 +1,4 @@
-alert('[APW] widget.js loaded')
+alert('teste gabriel')
 
 import { bootstrap, destroyAll } from './core/bootstrap'
 import { moduleRegistry } from './core/module-registry'
