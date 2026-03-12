@@ -6,7 +6,17 @@ let globalConfig: GlobalConfig | null = null
 
 const isDev = import.meta.env?.DEV ?? false
 
-const currentScriptSrc = (document.currentScript as HTMLScriptElement | null)?.src ?? ''
+const currentScriptSrc = (() => {
+  const cs = document.currentScript as HTMLScriptElement | null
+  if (cs && cs.src) return cs.src
+
+  const scripts = document.querySelectorAll<HTMLScriptElement>('script[src*="widget.js"]')
+  for (let i = 0; i < scripts.length; i++) {
+    if (scripts[i].src.indexOf('apostar') !== -1) return scripts[i].src
+  }
+
+  return ''
+})()
 
 function resolveBaseUrl(): string {
   if (isDev) return ''
