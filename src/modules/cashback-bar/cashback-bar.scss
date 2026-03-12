@@ -213,20 +213,18 @@ $pill-id: 'apostar-cashback-widget-pill';
   top: 155px;
   z-index: $z-modal - 2;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
-  width: 56px;
-  padding: 10px 6px;
+  width: auto;
+  padding: 10px 14px;
   border-radius: 14px 0 0 14px;
   background: linear-gradient(135deg, $cb-bg-light 0%, $cb-bg-mid 60%, $cb-bg-dark 100%);
   border: 1px solid rgba($cb-gold, 0.35);
   border-right: none;
   cursor: pointer;
-  overflow: hidden;
   font-family: $cb-font;
   animation: pillSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1), pillPulse 2.5s ease-in-out infinite 0.5s;
-  transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1), padding 0.35s ease, border-color 0.2s ease, background 0.2s ease;
+  transition: padding 0.35s ease, border-color 0.2s ease, background 0.2s ease;
 
   &::before {
     content: "";
@@ -241,50 +239,41 @@ $pill-id: 'apostar-cashback-widget-pill';
   }
 
   &:hover {
-    width: 230px;
-    padding: 10px 14px;
     background: linear-gradient(135deg, #0f2a4a 0%, #072040 60%, #061224 100%);
     border-color: rgba($cb-gold, 0.6);
   }
 
   .pill-text {
-    height: 0;
     max-width: 0;
-    margin: 0;
-    padding: 0;
     opacity: 0;
     overflow: hidden;
     white-space: nowrap;
-    font-size: 0;
-    line-height: 0;
+    font-size: 0.75rem;
+    line-height: 1;
     font-weight: 700;
     color: $cb-text;
-    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease, margin 0.35s ease;
   }
 
   &:hover .pill-text {
-    height: auto;
     max-width: 200px;
-    margin-top: 4px;
+    margin-right: 8px;
     opacity: 1;
-    font-size: 0.75rem;
-    line-height: 1.2;
   }
 
   .pill-icon {
     font-size: 1.4rem;
     flex-shrink: 0;
+    margin-right: 8px;
     text-shadow: 0 0 10px rgba($cb-gold, 0.5);
     line-height: 1;
   }
 
   .pill-value {
-    margin-top: 4px;
-    font-size: 0.58rem;
+    font-size: 0.75rem;
     font-weight: 800;
     color: $cb-gold;
     line-height: 1;
-    text-align: center;
     white-space: nowrap;
     text-shadow: 0 0 6px rgba($cb-gold, 0.3);
   }
@@ -332,8 +321,7 @@ $pill-id: 'apostar-cashback-widget-pill';
 @media (max-width: $bp-lg) {
   ##{$pill-id} {
     top: 130px;
-    width: 52px;
-    padding: 9px 5px;
+    padding: 9px 12px;
   }
 
   ##{$pill-id}-tooltip {
@@ -379,27 +367,15 @@ $pill-id: 'apostar-cashback-widget-pill';
 
   ##{$pill-id} {
     top: 110px;
-    width: 48px;
-    padding: 8px 4px;
+    padding: 8px 10px;
     border-radius: 12px 0 0 12px;
-
-    &:hover {
-      width: 48px;
-      padding: 8px 4px;
-    }
-
-    &:hover .pill-text {
-      max-width: 0;
-      opacity: 0;
-    }
 
     .pill-icon {
       display: none;
     }
 
     .pill-value {
-      margin-top: 0;
-      font-size: 0.52rem;
+      font-size: 0.65rem;
     }
   }
 
