@@ -1,0 +1,6 @@
+{
+  "cdnBase": "https://cdn.mnply.com.br/apostar",
+  "debug": true,
+  "cacheTTL": 300,
+  "featureFlags": {}
+}

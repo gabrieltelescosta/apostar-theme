@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apostar Widget - Dev Preview</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0f172a;
+      color: #f1f5f9;
+      min-height: 100vh;
+    }
+    .dev-header {
+      background: #1e293b;
+      border-bottom: 1px solid #334155;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .dev-header h1 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #f59e0b;
+    }
+    .dev-header span {
+      font-size: 0.75rem;
+      color: #64748b;
+      background: #0f172a;
+      padding: 4px 12px;
+      border-radius: 9999px;
+    }
+    .site-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 80px 24px;
+      color: #475569;
+    }
+    .empty-state p {
+      font-size: 0.875rem;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="dev-header">
+    <h1>Apostar Widget - Dev Mode</h1>
+    <span>localhost preview</span>
+  </div>
+
+  <div class="site-container">
+    <div class="empty-state">
+      <p>Widget carregado. Nenhum modulo registrado ainda.</p>
+      <p>Adicione modulos em <code>src/modules/</code> e registre em <code>src/widget.ts</code>.</p>
+    </div>
+  </div>
+
+  <script type="module" src="/src/widget.ts"></script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+node_modules/
+dist/
+cdn.mnply.com.br/
+*.local
+.DS_Store

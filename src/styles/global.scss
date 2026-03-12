@@ -1,0 +1,33 @@
+@use 'variables' as *;
+@use 'animations';
+
+[data-apw-module] {
+  box-sizing: border-box;
+  font-family: $font-family;
+  color: $color-text;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: inherit;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  a {
+    color: $color-primary;
+    text-decoration: none;
+    transition: color $transition-fast;
+
+    &:hover {
+      color: $color-primary-dark;
+    }
+  }
+}
