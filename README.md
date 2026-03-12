@@ -238,19 +238,58 @@ Config global em `config/global.json`:
 
 ---
 
+## Ambientes
+
+O projeto usa **duas branches** com deploy automatico na Vercel:
+
+| Ambiente | Branch | URL |
+|----------|--------|-----|
+| **Producao** | `main` | `https://apostar-theme.vercel.app/widget.js` |
+| **Staging** | `staging` | `https://apostar-theme-git-staging-gabrieltelescostas-projects.vercel.app/widget.js` |
+
+### Workflow
+
+1. Desenvolver e testar na branch `staging`
+2. Push para `staging` → Vercel faz deploy automatico na URL de staging
+3. Testar no site via Chrome Override (com `?apw=staging` na URL) ou apontando o GTM para a URL de staging
+4. Quando aprovado, abrir PR de `staging` → `main` no GitHub
+5. Fazer merge → Vercel faz deploy automatico em producao
+
+### Comandos Git
+
+```bash
+# Trabalhar em staging
+git checkout staging
+
+# Desenvolver, commitar e testar
+npm run build
+git add . && git commit -m "feat: descricao"
+git push
+
+# Quando pronto, promover para producao
+# Opcao 1: PR no GitHub (recomendado)
+# Opcao 2: Merge local
+git checkout main
+git merge staging
+git push
+git checkout staging
+```
+
+---
+
 ## Deploy
 
-### Vercel (producao)
+### Vercel
 
 - Repositorio conectado ao Vercel
-- Push para `main` = deploy automatico
-- URL: `https://apostar-theme.vercel.app/`
+- Push para `main` = deploy em producao
+- Push para `staging` = deploy em staging
 - Headers CORS configurados via `vercel.json`
 - Build output: `dist/widget.js` + `dist/modules/` + `dist/config/`
 
 ### GTM (injecao no site)
 
-Tag HTML customizada no GTM:
+Tag HTML customizada no GTM para **producao**:
 
 ```html
 <script>
@@ -264,13 +303,16 @@ Tag HTML customizada no GTM:
 </script>
 ```
 
+Para testar staging via GTM, trocar a URL para a de staging manualmente.
+
 **IMPORTANTE**: O `type="module"` e obrigatorio. Sem ele, `import()` e `import.meta.url` nao funcionam.
 
 ### Chrome Override (debug local)
 
 1. DevTools → Sources → Overrides → selecionar pasta local
-2. O arquivo `cdn.mnply.com.br/apostar/widget.js` e um loader que carrega a versao Vercel
-3. Util para testar se o widget carrega no contexto do site
+2. O arquivo `cdn.mnply.com.br/apostar/widget.js` e um loader inteligente
+3. Por padrao carrega a versao de **producao**
+4. Adicionar `?apw=staging` na URL do site para carregar a versao de **staging**
 
 ---
 
