@@ -1,6 +1,7 @@
 import { bootstrap, destroyAll } from './core/bootstrap'
 import { moduleRegistry } from './core/module-registry'
 import { eventBus } from './core/event-bus'
+import { apostarMoney } from './utils/money-rain'
 
 moduleRegistry.register('cashback-bar', () => import('./modules/cashback-bar/index'))
 
@@ -19,6 +20,8 @@ window.ApostarWidget = {
   events: eventBus,
   registry: moduleRegistry,
 }
+
+window.apostarMoney = apostarMoney
 
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => bootstrap())

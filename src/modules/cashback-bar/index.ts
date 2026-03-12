@@ -174,6 +174,9 @@ export default class CashbackBarModule extends BaseModule {
   }
 
   private openSmartico(): void {
+    if (window.apostarMoney) {
+      window.apostarMoney()
+    }
     if (window._smartico?.dp) {
       window._smartico.dp(this.smarticoAction)
     }

@@ -12,4 +12,9 @@ interface SmarticoSDK {
 
 interface Window {
   _smartico?: SmarticoSDK
+  apostarMoney: (opts?: {
+    duration?: number
+    billCount?: number
+    colors?: Array<{ body: string; border: string; text: string }>
+  }) => void
 }
