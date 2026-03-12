@@ -23,19 +23,21 @@ $pill-id: 'apostar-cashback-widget-pill';
 }
 
 @keyframes moneyFloat {
-  0% {
+  0%, 100% {
     transform: translateY(0) translateX(0);
     opacity: 0.12;
   }
-  25% { opacity: 0.2; }
+  25% {
+    transform: translateY(-30%) translateX(4px);
+    opacity: 0.2;
+  }
   50% {
     transform: translateY(-50%) translateX(6px);
     opacity: 0.16;
   }
-  75% { opacity: 0.2; }
-  100% {
-    transform: translateY(-100%) translateX(-4px);
-    opacity: 0.12;
+  75% {
+    transform: translateY(-30%) translateX(-4px);
+    opacity: 0.2;
   }
 }
 

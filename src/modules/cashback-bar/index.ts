@@ -2,7 +2,7 @@ import { BaseModule } from '../base-module'
 import type { ModuleEntry } from '../../types/config'
 import { injectStyles } from '../../utils/dom'
 import { logger } from '../../core/logger'
-import styles from './cashback-bar.module.scss?inline'
+import styles from './cashback-bar.scss?inline'
 
 const BAR_ID = 'apostar-cashback-widget-bar'
 const PILL_ID = 'apostar-cashback-widget-pill'
