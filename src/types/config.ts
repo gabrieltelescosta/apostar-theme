@@ -20,16 +20,9 @@ export interface PageConfig {
   modules: ModuleEntry[]
 }
 
-export interface SupabaseConfig {
-  url: string
-  anonKey: string
-  table?: string
-}
-
 export interface GlobalConfig {
   cdnBase: string
   configEndpoint?: string
-  supabase?: SupabaseConfig
   debug: boolean
   cacheTTL: number
   featureFlags: Record<string, boolean>
