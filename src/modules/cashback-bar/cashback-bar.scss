@@ -394,10 +394,11 @@ $pill-id: 'apostar-cashback-widget-pill';
     }
 
     .pill-icon {
-      font-size: 1.2rem;
+      display: none;
     }
 
     .pill-value {
+      margin-top: 0;
       font-size: 0.52rem;
     }
   }
