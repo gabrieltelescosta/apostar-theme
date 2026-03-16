@@ -173,7 +173,6 @@ export default class CashbackBarModule extends BaseModule {
     pill.id = PILL_ID
 
     pill.innerHTML = `
-      <span class="pill-icon">🎁</span>
       <span class="pill-text">Você tem cashback!</span>
       <span class="pill-value">${this.formatBRL(amount)}</span>
     `
@@ -183,7 +182,7 @@ export default class CashbackBarModule extends BaseModule {
 
     const tooltip = document.createElement('div')
     tooltip.id = `${PILL_ID}-tooltip`
-    tooltip.textContent = 'Cashback aqui! 💰'
+    tooltip.textContent = 'Cashback aqui!'
     document.body.appendChild(tooltip)
     tooltip.style.right = (pill.offsetWidth + 6) + 'px'
 
@@ -200,7 +199,6 @@ export default class CashbackBarModule extends BaseModule {
     bar.innerHTML = `
       <div class="content">
         <div class="message">
-          <span class="icon">🎁</span>
           <span class="text">
             <span>Você tem</span>
             <span class="value">${this.formatBRL(amount)}</span>
