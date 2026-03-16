@@ -8,6 +8,10 @@
         "apiEndpoint": "https://api-internal.apostar.app/api/my-cashback",
         "headerSelectors": ["header.header.header-layout", "header.header-mobile-layout"]
       }
+    },
+    {
+      "type": "casino-nav",
+      "data": {}
     }
   ]
 }
