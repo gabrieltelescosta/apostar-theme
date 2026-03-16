@@ -12,8 +12,7 @@ export default class CasinoNavModule extends BaseModule {
   selfManaged = true
 
   private headObserver: MutationObserver | null = null
-  private navObserver: MutationObserver | null = null
-  private provObserver: MutationObserver | null = null
+  private bodyObserver: MutationObserver | null = null
   private isNormalizing = false
 
   async init(config: ModuleEntry): Promise<void> {
@@ -22,6 +21,7 @@ export default class CasinoNavModule extends BaseModule {
     injectStyles(styles, STYLE_ID)
     this.injectFont()
     this.normalizeTexts()
+    this.stabilizeSearch()
     this.setupObservers()
 
     logger.info('Casino Nav Reskin ativo')
@@ -40,22 +40,18 @@ export default class CasinoNavModule extends BaseModule {
       this.headObserver.disconnect()
       this.headObserver = null
     }
-    if (this.navObserver) {
-      this.navObserver.disconnect()
-      this.navObserver = null
-    }
-    if (this.provObserver) {
-      this.provObserver.disconnect()
-      this.provObserver = null
+    if (this.bodyObserver) {
+      this.bodyObserver.disconnect()
+      this.bodyObserver = null
     }
 
-    const styleEl = document.getElementById(STYLE_ID)
+    var styleEl = document.getElementById(STYLE_ID)
     if (styleEl) styleEl.remove()
   }
 
   private injectFont(): void {
     if (document.getElementById(FONT_ID)) return
-    const link = document.createElement('link')
+    var link = document.createElement('link')
     link.id = FONT_ID
     link.rel = 'stylesheet'
     link.href =
@@ -91,6 +87,46 @@ export default class CasinoNavModule extends BaseModule {
     this.isNormalizing = false
   }
 
+  private stabilizeSearch(): void {
+    var search = document.querySelector('.casino-search') as HTMLElement | null
+    if (search) {
+      search.style.cssText +=
+        'display:flex!important;flex-wrap:nowrap!important;overflow:hidden!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;'
+    }
+
+    var wrapper = document.querySelector(
+      '.casino-search__wrapper',
+    ) as HTMLElement | null
+    if (wrapper) {
+      wrapper.style.cssText +=
+        'flex:1 1 0%!important;min-width:0!important;overflow:hidden!important;'
+    }
+
+    var field = document.querySelector(
+      '.casino-search__field',
+    ) as HTMLElement | null
+    if (field) {
+      field.style.cssText +=
+        'flex:1 1 0%!important;min-width:0!important;overflow:hidden!important;'
+    }
+
+    var mobileWrapper = document.querySelector(
+      '.casino-search .search-box-wrapper',
+    ) as HTMLElement | null
+    if (mobileWrapper) {
+      mobileWrapper.style.cssText +=
+        'flex:1 1 0%!important;min-width:0!important;overflow:hidden!important;'
+    }
+
+    var mobileField = document.querySelector(
+      '.casino-search .search-box',
+    ) as HTMLElement | null
+    if (mobileField) {
+      mobileField.style.cssText +=
+        'flex:1 1 0%!important;min-width:0!important;overflow:hidden!important;'
+    }
+  }
+
   private setupObservers(): void {
     this.headObserver = new MutationObserver(() => {
       if (!document.getElementById(STYLE_ID)) {
@@ -99,34 +135,20 @@ export default class CasinoNavModule extends BaseModule {
     })
     this.headObserver.observe(document.head, { childList: true })
 
-    var navEl = document.querySelector('.casino-navigation-menu')
-    if (navEl) {
-      var navTimer: ReturnType<typeof setTimeout> | undefined
-      this.navObserver = new MutationObserver(() => {
-        if (this.isNormalizing) return
-        clearTimeout(navTimer)
-        navTimer = setTimeout(() => this.normalizeTexts(), 50)
-      })
-      this.navObserver.observe(navEl, {
-        childList: true,
-        subtree: true,
-        characterData: true,
-      })
-    }
-
-    var provEl = document.querySelector('.casino-providers')
-    if (provEl) {
-      var provTimer: ReturnType<typeof setTimeout> | undefined
-      this.provObserver = new MutationObserver(() => {
-        if (this.isNormalizing) return
-        clearTimeout(provTimer)
-        provTimer = setTimeout(() => this.normalizeTexts(), 50)
-      })
-      this.provObserver.observe(provEl, {
-        childList: true,
-        subtree: true,
-        characterData: true,
-      })
-    }
+    var globalTimer: ReturnType<typeof setTimeout> | undefined
+    this.bodyObserver = new MutationObserver(() => {
+      if (this.isNormalizing) return
+      clearTimeout(globalTimer)
+      globalTimer = setTimeout(() => {
+        injectStyles(styles, STYLE_ID)
+        this.normalizeTexts()
+        this.stabilizeSearch()
+      }, 80)
+    })
+    this.bodyObserver.observe(document.body, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+    })
   }
 }
