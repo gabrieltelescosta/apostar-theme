@@ -197,24 +197,7 @@ export default class CashbackBarModule extends BaseModule {
     const bar = document.createElement('div')
     bar.id = BAR_ID
 
-    const particles = [
-      { left: '8%', delay: '0s', dur: '3.5s' },
-      { left: '22%', delay: '0.8s', dur: '4.2s' },
-      { left: '38%', delay: '1.5s', dur: '3.8s' },
-      { left: '55%', delay: '0.3s', dur: '4.5s' },
-      { left: '70%', delay: '2.0s', dur: '3.2s' },
-      { left: '85%', delay: '1.2s', dur: '4.0s' },
-    ]
-
-    const particlesHTML = particles
-      .map(
-        (p) =>
-          `<span class="money-particle" style="left:${p.left};animation-delay:${p.delay};animation-duration:${p.dur}">💰</span>`,
-      )
-      .join('')
-
     bar.innerHTML = `
-      ${particlesHTML}
       <div class="content">
         <div class="message">
           <span class="icon">🎁</span>

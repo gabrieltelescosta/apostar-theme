@@ -22,25 +22,6 @@ $pill-id: 'apostar-cashback-widget-pill';
   100% { left: 120%; }
 }
 
-@keyframes moneyFloat {
-  0%, 100% {
-    transform: translateY(0) translateX(0);
-    opacity: 0.12;
-  }
-  25% {
-    transform: translateY(-30%) translateX(4px);
-    opacity: 0.2;
-  }
-  50% {
-    transform: translateY(-50%) translateX(6px);
-    opacity: 0.16;
-  }
-  75% {
-    transform: translateY(-30%) translateX(-4px);
-    opacity: 0.2;
-  }
-}
-
 @keyframes pillPulse {
   0%, 100% { box-shadow: 0 0 8px rgba($cb-gold, 0.3), 0 0 0 0 rgba($cb-gold, 0.2); }
   50% { box-shadow: 0 0 14px rgba($cb-gold, 0.5), 0 0 0 8px rgba($cb-gold, 0); }
@@ -73,7 +54,7 @@ $pill-id: 'apostar-cashback-widget-pill';
   z-index: 49;
   width: 100%;
   min-height: 48px;
-  background: linear-gradient(135deg, $cb-bg-dark 0%, $cb-bg-mid 50%, $cb-bg-light 100%);
+  background: #F8C03D;
   font-family: $cb-font;
   color: $cb-text;
   cursor: pointer;
@@ -84,7 +65,7 @@ $pill-id: 'apostar-cashback-widget-pill';
   transition: background 0.3s ease;
 
   &:hover {
-    background: linear-gradient(135deg, #061224 0%, #072040 50%, #0f2a4a 100%);
+    background: #e6b035;
   }
 
   &::before {
@@ -105,17 +86,6 @@ $pill-id: 'apostar-cashback-widget-pill';
     transform: skewX(-18deg);
     pointer-events: none;
     animation: cashbackShine 4s ease-in-out infinite;
-  }
-
-  .money-particle {
-    position: absolute;
-    bottom: 0;
-    font-size: 1rem;
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.12;
-    animation: moneyFloat linear infinite;
-    user-select: none;
   }
 
   .content {
@@ -221,6 +191,7 @@ $pill-id: 'apostar-cashback-widget-pill';
   background: linear-gradient(135deg, $cb-bg-light 0%, $cb-bg-mid 60%, $cb-bg-dark 100%);
   border: 1px solid rgba($cb-gold, 0.35);
   border-right: none;
+  overflow: hidden;
   cursor: pointer;
   font-family: $cb-font;
   animation: pillSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1), pillPulse 2.5s ease-in-out infinite 0.5s;
