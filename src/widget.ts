@@ -4,8 +4,6 @@ import { eventBus } from './core/event-bus'
 import { apostarMoney } from './utils/money-rain'
 
 moduleRegistry.register('cashback-bar', () => import('./modules/cashback-bar/index'))
-moduleRegistry.register('casino-nav', () => import('./modules/casino-nav/index'))
-
 declare global {
   interface Window {
     ApostarWidget: {
