@@ -104,12 +104,13 @@
   white-space: nowrap !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
-  max-width: 58px !important;
+  max-width: 0px !important;
   width: 100% !important;
   line-height: 1.2 !important;
   margin-top: 4px !important;
   transition: color 0.25s ease !important;
   text-transform: none !important;
+  margin-inline-start: 0!important;
 }
 
 .casino-navigation-menu__item:hover .casino-navigation-menu__item-text {
@@ -364,6 +365,7 @@
   height: 100% !important;
   transition: none !important;
   text-transform: none !important;
+  background: #023568 !important;
 }
 
 .casino-search__input::placeholder,
@@ -461,7 +463,7 @@
 
   .casino-navigation-menu__item-text {
     font-size: 9px !important;
-    max-width: 50px !important;
+    max-width: 0px !important;
   }
 
   .casino-providers {
