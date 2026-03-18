@@ -2,6 +2,50 @@
   "page": "default",
   "modules": [
     {
+      "type": "loading-screen",
+      "data": {
+        "logoSrc": "https://media.pl-01.cdn-platform.com/cms/sites/image-1747145012195681.webp"
+      }
+    },
+    {
+      "type": "css-vars",
+      "data": {}
+    },
+    {
+      "type": "header-reskin",
+      "data": {}
+    },
+    {
+      "type": "casino-nav-reskin",
+      "data": {}
+    },
+    {
+      "type": "casino-layout",
+      "data": {}
+    },
+    {
+      "type": "cashback-tags",
+      "data": {
+        "games": { "Fortune Tiger": "10%" }
+      }
+    },
+    {
+      "type": "winners-ticker",
+      "data": {
+        "apiUrl": "/api/gs/lastWinnings:list",
+        "iconCdn": "https://media.pl-01.cdn-platform.com/games/",
+        "pollInterval": 15000
+      }
+    },
+    {
+      "type": "casino-filters",
+      "data": {}
+    },
+    {
+      "type": "providers-block",
+      "data": {}
+    },
+    {
       "type": "cashback-bar",
       "data": {
         "smarticoAction": "dp:gf_section&id=1297",

@@ -1,0 +1,23 @@
+html:root[theme='dark'] {
+  --brand: #e9b00d !important;
+}
+
+.centered-image-logo {
+  animation: logoPulseGlow 1.8s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes logoPulseGlow {
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0px rgba(246, 172, 0, 0));
+  }
+  50% {
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 12px rgba(246, 172, 0, 0.6));
+  }
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0px rgba(246, 172, 0, 0));
+  }
+}

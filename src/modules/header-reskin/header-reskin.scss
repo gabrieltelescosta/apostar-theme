@@ -1,0 +1,185 @@
+@media (max-width: 768px) {
+  @keyframes ab-header-fade {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .header-mobile-layout.header.header-3 {
+    background: #004786 !important;
+    border-bottom: 1px solid rgba(233, 176, 13, 0.12) !important;
+    padding: 8px 12px !important;
+    font-family: 'Jost', 'Open Sans', Helvetica, Arial, sans-serif !important;
+    animation: ab-header-fade 0.4s ease-out !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35), 0 1px 4px rgba(0, 71, 134, 0.2) !important;
+  }
+
+  .header.header-3 .header-logo .logo::after {
+    content: initial !important;
+  }
+
+  .header {
+    height: 70px !important;
+    background: #004786 !important;
+  }
+
+  .header.header-3 .header-logo .logo {
+    background: #004786 !important;
+  }
+
+  .btn.primary {
+    background: linear-gradient(180deg, #ffd474, #f6ad04) !important;
+    color: #051932 !important;
+  }
+
+  .header-mobile-layout .header-logo img.centered-image-logo {
+    height: 32px !important;
+    width: auto !important;
+    filter: brightness(1.1) !important;
+    transition: filter 0.3s ease !important;
+  }
+
+  // ── Logged-out ──
+
+  .header .header-content-block .header-button-block.two-button > a::before {
+    content: initial !important;
+  }
+
+  .header-mobile-layout .header-button-block.two-button {
+    display: flex !important;
+    gap: 8px !important;
+    align-items: center !important;
+  }
+
+  .header-mobile-layout .header-button-block .btn {
+    font-family: 'Jost', 'Open Sans', Helvetica, Arial, sans-serif !important;
+    border-radius: 10px !important;
+    font-size: 12px !important;
+    line-height: initial !important;
+    transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    cursor: pointer !important;
+    text-transform: none !important;
+    letter-spacing: 0.02em !important;
+    padding: 18px 20px !important;
+  }
+
+  .header-mobile-layout .header-button-block a[href='/signin'] .btn,
+  .header-mobile-layout .header-button-block .btn:not(.two-button-signup) {
+    background: #ffffff26 !important;
+    border: none !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+  }
+
+  .header-mobile-layout .header-button-block .btn:not(.two-button-signup):active {
+    transform: scale(0.96) !important;
+  }
+
+  .header-mobile-layout .header-button-block .btn.two-button-signup {
+    background: linear-gradient(180deg, #ffd474, #f6ad04) !important;
+    color: #04091c !important;
+    font-weight: 700 !important;
+    border: none !important;
+  }
+
+  .header-mobile-layout .header-button-block .btn.two-button-signup:active {
+    transform: scale(0.96) !important;
+  }
+
+  // ── Logged-in ──
+
+  .header-mobile-layout .header-content-wrapper {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
+  .cl-smartico-inbox-button {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    border: none !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    height: 40px !important;
+    width: 40px !important;
+    padding: 8px !important;
+    position: relative !important;
+    outline: none !important;
+  }
+
+  .header-mobile-layout .cl-smartico-inbox-button .cl-mail-icon {
+    width: 22px !important;
+    height: 22px !important;
+  }
+
+  .header-mobile-layout .header-content-block {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+
+  .header-mobile-layout .balance-container {
+    text-decoration: none !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .header-mobile-layout .balance-container .balance-label {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1px !important;
+    font-family: 'Jost', 'Open Sans', Helvetica, Arial, sans-serif !important;
+  }
+
+  .header-mobile-layout .balance-container .title-small-bold-text {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    line-height: 1.2 !important;
+    letter-spacing: 0.01em !important;
+  }
+
+  .header-mobile-layout .balance-container .balance-currency {
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    opacity: 0.7 !important;
+    margin-right: 2px !important;
+  }
+
+  .header-mobile-layout .balance-container .amount {
+    font-weight: 700 !important;
+  }
+
+  .header-mobile-layout .balance-container .sub-title-small-300-text {
+    font-size: 10px !important;
+    color: rgba(233, 176, 13, 0.6) !important;
+    font-weight: 400 !important;
+    line-height: 1.2 !important;
+  }
+
+  .header-mobile-layout .balance-container .sub-title-small-300-text .balance-currency,
+  .header-mobile-layout .balance-container .sub-title-small-300-text .amount {
+    font-size: 10px !important;
+    opacity: 1 !important;
+    color: rgba(233, 176, 13, 0.6) !important;
+  }
+
+  .header-mobile-layout .deposit-button-container .btn,
+  .header-mobile-layout .deposit-button-container .btn.medium.primary {
+    font-family: 'Jost', 'Open Sans', Helvetica, Arial, sans-serif !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    line-height: initial !important;
+    border: none !important;
+    border-radius: 10px !important;
+    padding: 8px 20px !important;
+    color: #04091c !important;
+    cursor: pointer !important;
+    text-transform: none !important;
+    letter-spacing: 0.02em !important;
+    transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    background: linear-gradient(180deg, #ffd474, #f6ad04) !important;
+  }
+
+  .header-mobile-layout .deposit-button-container .btn:active {
+    transform: scale(0.96) !important;
+  }
+}

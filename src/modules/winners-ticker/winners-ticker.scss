@@ -1,0 +1,86 @@
+.cl-wrapper.cl-vertical   { display: none !important; }
+.game-item-wrapper         { display: none !important; }
+
+.ab-wt-container {
+  overflow: hidden;
+  font-family: 'Jost', sans-serif;
+  transition: opacity 0.5s ease;
+
+  &.ab-wt-entering { opacity: 0; }
+}
+
+.ab-wt-track {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  width: max-content;
+  animation: ab-wt-scroll 30s linear infinite;
+
+  &:hover { animation-play-state: paused; }
+}
+
+@keyframes ab-wt-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.ab-wt-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  margin: 6px 5px;
+}
+
+.ab-wt-img {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  border: 1.5px solid rgba(233, 176, 13, 0.2);
+  object-fit: cover;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.ab-wt-details {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.ab-wt-congrats { display: none; }
+
+.ab-wt-win-line {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.ab-wt-won   { color: rgba(255, 255, 255, 0.5); font-size: 11px; }
+.ab-wt-amount { color: #e9b00d; font-weight: 700; font-size: 13px; }
+
+.ab-wt-game {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+
+  &::before { content: '·'; margin-right: 4px; }
+}
+
+@media (max-width: 768px) {
+  .ab-wt-img { width: 40px; height: 40px; }
+}
