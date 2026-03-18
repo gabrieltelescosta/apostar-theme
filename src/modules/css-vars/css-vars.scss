@@ -7,6 +7,19 @@ html:root[theme='dark'] {
   transform-origin: center;
 }
 
+.signup-popup-wrapper .popup__window .static.signup-popup-static-block p img {
+  width: 100% !important;
+  height: 150px;
+}
+.signup-popup-wrapper .popup__window .static.signup-popup-static-block {
+  block-size: initial;
+  inline-size: initial;
+}
+
+.profile-wrapper-absolute {
+  height: calc(100% - 70px);
+}
+
 @keyframes logoPulseGlow {
   0% {
     transform: scale(1);

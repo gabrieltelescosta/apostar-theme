@@ -217,7 +217,7 @@
     .icon { width: 14px !important; height: 14px !important; color: inherit !important; }
   }
 
-  .header-title.border { border-bottom: none !important; }
+  .header-title.border { border: none !important; }
 
   .popup__header .header-title {
     display: flex !important;
@@ -294,6 +294,7 @@
   .sticky-bottom-buttons-container {
     position: relative !important;
     background: initial !important;
+    border: none !important;
     border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
     padding: 14px 16px !important;
     padding-bottom: calc(14px + env(safe-area-inset-bottom)) !important;
