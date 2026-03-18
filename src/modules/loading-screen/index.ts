@@ -15,22 +15,24 @@ export default class LoadingScreenModule extends BaseModule {
   async init(config: ModuleEntry): Promise<void> {
     await super.init(config)
 
-    if (document.getElementById(SCREEN_ID)) return
-
     injectStyles(styles, 'apw-styles-loading-screen')
 
-    this.overlay = document.createElement('div')
-    this.overlay.id = SCREEN_ID
+    const existing = document.getElementById(SCREEN_ID)
+    if (existing) {
+      this.overlay = existing as HTMLElement
+    } else {
+      this.overlay = document.createElement('div')
+      this.overlay.id = SCREEN_ID
+      const logoSrc = this.data<string>(
+        'logoSrc',
+        'https://media.pl-01.cdn-platform.com/cms/sites/image-1747145012195681.webp',
+      )
+      this.overlay.innerHTML = `<img src="${logoSrc}" alt="Loading">`
+      document.body.appendChild(this.overlay)
+    }
 
-    const logoSrc = this.data<string>(
-      'logoSrc',
-      'https://media.pl-01.cdn-platform.com/cms/sites/image-1747145012195681.webp',
-    )
-    this.overlay.innerHTML = `<img src="${logoSrc}" alt="Loading">`
-    document.body.appendChild(this.overlay)
-
-    window.addEventListener('load', () => setTimeout(() => this.dismiss(), 300))
-    setTimeout(() => this.dismiss(), 5000)
+    window.addEventListener('load', () => setTimeout(() => this.dismiss(), 100))
+    setTimeout(() => this.dismiss(), 3000)
   }
 
   protected template(): string {
