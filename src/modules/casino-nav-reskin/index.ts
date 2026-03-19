@@ -11,9 +11,19 @@ export default class CasinoNavReskinModule extends BaseModule {
   private bodyObserver: MutationObserver | null = null
   private isNormalizing = false
 
+  private readonly FONT_ID = 'apw-font-jost'
+
+  private readonly NAV_ICON_MAP: Record<string, string> = {
+    home: 'category_49752_Home_1773945397536.webp',
+    all_games: 'category_49802_Todos_1773945468130.webp',
+    favourites: 'category_41103_Favoritos_1773945796824.webp',
+  }
+  private readonly CDN_BASE = 'https://media.pl-01.cdn-platform.com/games/'
+
   async init(config: ModuleEntry): Promise<void> {
     await super.init(config)
     injectStyles(styles, 'apw-styles-casino-nav-reskin')
+    this.injectFont()
 
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => this.start())
@@ -39,6 +49,7 @@ export default class CasinoNavReskinModule extends BaseModule {
 
   private start(): void {
     this.normalizeTexts()
+    this.replaceNavIcons()
     this.stabilizeSearch()
     this.setupScrollFade()
     setTimeout(() => this.resetCategoryScroll(), 150)
@@ -57,6 +68,7 @@ export default class CasinoNavReskinModule extends BaseModule {
       debounce = setTimeout(() => {
         injectStyles(styles, 'apw-styles-casino-nav-reskin')
         this.normalizeTexts()
+        this.replaceNavIcons()
         this.stabilizeSearch()
       }, 80)
     })
@@ -136,5 +148,30 @@ export default class CasinoNavReskinModule extends BaseModule {
   private resetCategoryScroll(): void {
     const list = document.querySelector<HTMLElement>('.casino-navigation-menu__list')
     if (list) list.scrollLeft = 0
+  }
+
+  private injectFont(): void {
+    if (document.getElementById(this.FONT_ID)) return
+    const link = document.createElement('link')
+    link.id = this.FONT_ID
+    link.rel = 'stylesheet'
+    link.href =
+      'https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&display=swap'
+    document.head.appendChild(link)
+  }
+
+  private replaceNavIcons(): void {
+    Object.entries(this.NAV_ICON_MAP).forEach(([dataId, filename]) => {
+      const svg = document.querySelector<SVGElement>(
+        `.casino-navigation-menu__item-icon svg[data-id="${dataId}"]`
+      )
+      if (!svg) return
+      const img = document.createElement('img')
+      img.src = this.CDN_BASE + filename
+      img.alt = dataId
+      img.loading = 'eager'
+      img.style.cssText = 'width:22px;height:22px;object-fit:contain;'
+      svg.parentNode?.replaceChild(img, svg)
+    })
   }
 }
