@@ -19,8 +19,13 @@ $pill-id: 'apostar-cashback-widget-pill';
 }
 
 @keyframes circlePulse {
-  0%, 100% { box-shadow: 0 0 8px rgba(246, 173, 4, 0.3), 0 0 0 0 rgba(246, 173, 4, 0.2); }
-  50%       { box-shadow: 0 0 14px rgba(246, 173, 4, 0.5), 0 0 0 8px rgba(246, 173, 4, 0); }
+  0%, 100% { box-shadow: 0 0 10px rgba(0, 71, 134, 0.4), 0 0 0 0 rgba(0, 71, 134, 0.3); }
+  50%       { box-shadow: 0 0 20px rgba(0, 71, 134, 0.6), 0 0 0 10px rgba(0, 71, 134, 0); }
+}
+
+@keyframes cashbackPulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.15); }
 }
 
 @keyframes tooltipBounce {
@@ -161,20 +166,27 @@ $pill-id: 'apostar-cashback-widget-pill';
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
-  background: linear-gradient(180deg, #ffd474, #f6ad04);
-  border: 2px solid rgba($cb-dark, 0.15);
+  background: radial-gradient(circle, #4a81bf 0%, #004786 70%, #002a5c 100%);
+  border: 2px solid rgba(0, 71, 134, 0.4);
   cursor: pointer;
   overflow: hidden;
   font-family: $cb-font;
   animation: circleSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1), circlePulse 2.5s ease-in-out infinite 0.5s;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 
-  &:hover { transform: scale(1.1); box-shadow: 0 0 16px rgba(246, 173, 4, 0.5); }
+  &:hover { transform: scale(1.1); box-shadow: 0 0 16px rgba(0, 71, 134, 0.5); }
 
-  svg { width: 22px; height: 22px; fill: $cb-dark; }
+  img {
+    width: 45px;
+    height: 45px;
+    object-fit: contain;
+    animation: cashbackPulse 2s ease-in-out infinite;
+    position: relative;
+    z-index: 1;
+  }
 }
 
 // ── Tooltip ──
@@ -215,7 +227,7 @@ $pill-id: 'apostar-cashback-widget-pill';
 // ── Responsive ──
 
 @media (max-width: $bp-lg) {
-  ##{$pill-id} { top: 105px; width: 40px; height: 40px; svg { width: 20px; height: 20px; } }
+  ##{$pill-id} { top: 105px; width: 48px; height: 48px; img { width: 40px; height: 40px; } }
   ##{$pill-id}-tooltip { top: 113px !important; }
 }
 
@@ -233,9 +245,9 @@ $pill-id: 'apostar-cashback-widget-pill';
 
   ##{$pill-id} {
     top: 85px;
-    width: 38px;
-    height: 38px;
-    svg { width: 18px; height: 18px; }
+    width: 44px;
+    height: 44px;
+    img { width: 38px; height: 38px; }
   }
 
   ##{$pill-id}-tooltip {

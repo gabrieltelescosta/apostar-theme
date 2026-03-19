@@ -181,7 +181,7 @@ export default class CashbackBarModule extends BaseModule {
 
     const pill = document.createElement('div')
     pill.id = PILL_ID
-    pill.innerHTML = CASHBACK_SVG
+    pill.innerHTML = '<img src="https://cdn.mnply.com.br/apostar-rebrand/icon_cashback.png" alt="Cashback" />'
     pill.addEventListener('click', () => this.openSmartico())
     document.body.appendChild(pill)
 
