@@ -1,5 +1,6 @@
 html:root[theme='dark'] {
-  --brand: #e9b00d !important;
+  --material: #051932;
+  --bg: #051932;
 }
 
 .centered-image-logo {
@@ -19,6 +20,7 @@ html:root[theme='dark'] {
 .profile-wrapper-absolute {
   height: calc(100% - 70px);
 }
+
 
 @keyframes logoPulseGlow {
   0% {
