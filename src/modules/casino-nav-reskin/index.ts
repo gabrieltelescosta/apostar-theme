@@ -14,9 +14,9 @@ export default class CasinoNavReskinModule extends BaseModule {
   private readonly FONT_ID = 'apw-font-jost'
 
   private readonly NAV_ICON_MAP: Record<string, string> = {
-    Home: 'category_49752_Home_1773945397536.webp',
-    Todos: 'category_49802_Todos_1773945468130.webp',
-    Favoritos: 'category_41103_Favoritos_1773945796824.webp',
+    home: 'category_49752_Home_1773945397536.webp',
+    all_games: 'category_49802_Todos_1773945468130.webp',
+    favourites: 'category_41103_Favoritos_1773945796824.webp',
   }
   private readonly CDN_BASE = 'https://media.pl-01.cdn-platform.com/games/'
 
@@ -162,21 +162,16 @@ export default class CasinoNavReskinModule extends BaseModule {
 
   private replaceNavIcons(): void {
     document.querySelectorAll<HTMLElement>('.casino-navigation-menu__item').forEach((item) => {
-      const textEl = item.querySelector<HTMLElement>('.casino-navigation-menu__item-text')
-      if (!textEl) return
-      const label = (textEl.textContent ?? '').trim()
-      const matchKey = Object.keys(this.NAV_ICON_MAP).find(
-        (k) => k.toLowerCase() === label.toLowerCase()
-      )
-      if (!matchKey) return
+      const dataId = item.getAttribute('data-id')
+      if (!dataId || !this.NAV_ICON_MAP[dataId]) return
       const iconWrap = item.querySelector<HTMLElement>('.casino-navigation-menu__item-icon')
       if (!iconWrap) return
       if (iconWrap.querySelector('img')) return
       const svg = iconWrap.querySelector('svg')
       if (!svg) return
       const img = document.createElement('img')
-      img.src = this.CDN_BASE + this.NAV_ICON_MAP[matchKey]
-      img.alt = matchKey
+      img.src = this.CDN_BASE + this.NAV_ICON_MAP[dataId]
+      img.alt = dataId
       img.loading = 'eager'
       img.style.cssText = 'width:22px;height:22px;object-fit:contain;'
       svg.parentNode?.replaceChild(img, svg)
