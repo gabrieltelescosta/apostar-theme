@@ -25,6 +25,7 @@ export default class CasinoNavReskinModule extends BaseModule {
     await super.init(config)
     injectStyles(styles, 'apw-styles-casino-nav-reskin')
     this.injectFont()
+    this.preloadNavIcons()
 
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => this.start())
@@ -65,11 +66,11 @@ export default class CasinoNavReskinModule extends BaseModule {
     let debounce: ReturnType<typeof setTimeout>
     this.bodyObserver = new MutationObserver(() => {
       if (this.isNormalizing) return
+      this.replaceNavIcons()
       clearTimeout(debounce)
       debounce = setTimeout(() => {
         injectStyles(styles, 'apw-styles-casino-nav-reskin')
         this.normalizeTexts()
-        this.replaceNavIcons()
         this.stabilizeSearch()
       }, 80)
     })
@@ -149,6 +150,16 @@ export default class CasinoNavReskinModule extends BaseModule {
   private resetCategoryScroll(): void {
     const list = document.querySelector<HTMLElement>('.casino-navigation-menu__list')
     if (list) list.scrollLeft = 0
+  }
+
+  private preloadNavIcons(): void {
+    Object.values(this.NAV_ICON_MAP).forEach((file) => {
+      const link = document.createElement('link')
+      link.rel = 'preload'
+      link.as = 'image'
+      link.href = this.CDN_BASE + file
+      document.head.appendChild(link)
+    })
   }
 
   private injectFont(): void {

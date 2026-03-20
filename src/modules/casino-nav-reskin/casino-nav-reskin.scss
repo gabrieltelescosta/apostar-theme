@@ -97,6 +97,15 @@
     }
   }
 
+  .casino-navigation-menu__item[data-id="home"],
+  .casino-navigation-menu__item[data-id="all_games"],
+  .casino-navigation-menu__item[data-id="favourites"],
+  .casino-navigation-menu__item[data-id="search"] {
+    .casino-navigation-menu__item-icon svg {
+      display: none !important;
+    }
+  }
+
   .casino-navigation-menu__item:hover .casino-navigation-menu__item-icon {
     box-shadow: 0 0 14px rgba(233, 176, 13, 0.2), 0 2px 10px rgba(16, 68, 128, 0.4) !important;
     border-color: rgba(233, 176, 13, 0.45) !important;
