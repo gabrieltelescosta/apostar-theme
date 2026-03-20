@@ -17,6 +17,7 @@ export default class CasinoNavReskinModule extends BaseModule {
     home: 'category_49752_Home_1773945397536.webp',
     all_games: 'category_49802_Todos_1773945468130.webp',
     favourites: 'category_41103_Favoritos_1773945796824.webp',
+    search: 'category_50002_SEARCH_1773954791879.webp',
   }
   private readonly CDN_BASE = 'https://media.pl-01.cdn-platform.com/games/'
 
