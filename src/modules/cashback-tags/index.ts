@@ -12,14 +12,14 @@ export default class CashbackTagsModule extends BaseModule {
   selfManaged = true
 
   private observer: MutationObserver | null = null
-  private gamesMap: Record<string, string> = {}
-  private allGamesValue: string | null = null
+  private gamesMap: string[] = []
+  private allGames = false
 
   async init(config: ModuleEntry): Promise<void> {
     await super.init(config)
 
-    this.gamesMap = this.data<Record<string, string>>('games', {})
-    this.allGamesValue = this.data<string | null>('allGames', null)
+    this.gamesMap = this.data<string[]>('games', [])
+    this.allGames = this.data<boolean>('allGames', false)
 
     injectStyles(styles, 'apw-styles-cashback-tags')
     this.applyTags()
@@ -52,24 +52,21 @@ export default class CashbackTagsModule extends BaseModule {
     document.querySelectorAll<HTMLElement>('.tile-container').forEach((tile) => {
       if (tile.getAttribute(MARKED_ATTR)) return
 
-      let matchedValue: string | null = null
       let shouldApply = false
 
-      if (this.allGamesValue) {
+      if (this.allGames) {
         shouldApply = true
-        matchedValue = this.allGamesValue
       } else {
         const nameEl = tile.querySelector<HTMLElement>('.tile-container__name')
         if (!nameEl) return
         const name = this.normalize(nameEl.textContent ?? '')
         if (!name) return
-        const key = Object.keys(this.gamesMap).find(
-          (k) => this.normalize(k) === name,
-        )
-        if (key) { shouldApply = true; matchedValue = this.gamesMap[key] }
+        if (this.gamesMap.some((k) => this.normalize(k) === name)) {
+          shouldApply = true
+        }
       }
 
-      if (!shouldApply || !matchedValue) return
+      if (!shouldApply) return
 
       const bg = tile.querySelector<HTMLElement>('.tile-container__bg')
       if (!bg) return
