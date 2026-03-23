@@ -149,6 +149,7 @@ export default class WinnersTickerModule extends BaseModule {
     if (existing) {
       const track = existing.querySelector('.ab-wt-track')
       if (track) track.innerHTML = doubled
+      this.hideOriginalWinnersWrapper(existing)
       return
     }
 

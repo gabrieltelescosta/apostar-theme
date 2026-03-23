@@ -81,6 +81,10 @@
   &::before { content: '·'; margin-right: 4px; }
 }
 
+@media (min-width: 769px) {
+  .casino__winners { display: none !important; }
+}
+
 @media (max-width: 768px) {
   .ab-wt-img { width: 40px; height: 40px; }
 }
