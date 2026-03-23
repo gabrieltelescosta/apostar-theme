@@ -290,8 +290,13 @@
     height: 40px !important;
   }
 
+  .header .header-tabs .header-menu {
+    gap: 15px !important;
+  }
+
   .header .header-tabs .header-menu .tab-item-wrapper .tab-link {
     font-size: 0.8rem !important;
+    padding-inline-end: initial !important;
   }
 
   .header .header-content .header-info__bar .btn.header__deposit {

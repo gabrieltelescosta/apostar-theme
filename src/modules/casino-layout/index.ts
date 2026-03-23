@@ -333,10 +333,9 @@ export default class CasinoLayoutModule extends BaseModule {
   private enhanceTiles(container: HTMLElement): void {
     container.querySelectorAll<HTMLElement>('.ab-cashback-badge').forEach((b) => b.remove())
 
-    container.querySelectorAll<HTMLElement>('.tile-container').forEach((tile, i) => {
+    container.querySelectorAll<HTMLElement>('.tile-container').forEach((tile) => {
       if (tile.hasAttribute('data-ab-layout')) return
       tile.setAttribute('data-ab-layout', 'true')
-      tile.style.animationDelay = `${i * 30}ms`
       this.makeImageClickable(tile)
 
       const fav = tile.querySelector<HTMLElement>('.tile-container__favorite')
@@ -441,19 +440,18 @@ export default class CasinoLayoutModule extends BaseModule {
 
     let pending = false
     let lastRun = 0
-    const THROTTLE_MS = 500
+    const THROTTLE_MS = 600
     const obsOpts: MutationObserverInit = {
       childList: true,
       subtree: true,
       attributes: true,
-      attributeFilter: ['src', 'data-src', 'data-image', 'data-lazy', 'data-original', 'style'],
+      attributeFilter: ['src', 'data-src', 'data-image', 'data-lazy', 'data-original'],
     }
 
     this.observer = new MutationObserver((mutations) => {
       if (pending) return
-      const dominated = mutations.some((m) => m.addedNodes.length > 0 || m.type === 'attributes')
+      const dominated = mutations.some((m) => m.addedNodes.length > 0)
       if (!dominated) return
-      if (!document.querySelector('.tile-container:not([data-ab-layout])')) return
       pending = true
       const elapsed = Date.now() - lastRun
       const wait = Math.max(0, THROTTLE_MS - elapsed)

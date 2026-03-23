@@ -17,6 +17,7 @@ export default class WinnersTickerModule extends BaseModule {
 
   private pollTimer: ReturnType<typeof setInterval> | null = null
   private mutationObserver: MutationObserver | null = null
+  private lastDataHash = ''
 
   private get apiUrl(): string {
     return this.data<string>('apiUrl', '/api/gs/lastWinnings:list')
@@ -146,12 +147,17 @@ export default class WinnersTickerModule extends BaseModule {
     const doubled = cardsHTML + cardsHTML
     const existing = document.querySelector<HTMLElement>(`.${CONTAINER_CLASS}`)
 
+    const hash = cardsHTML.length + ':' + (data[0]?.info.login ?? '')
     if (existing) {
-      const track = existing.querySelector('.ab-wt-track')
-      if (track) track.innerHTML = doubled
+      if (hash !== this.lastDataHash) {
+        const track = existing.querySelector('.ab-wt-track')
+        if (track) track.innerHTML = doubled
+        this.lastDataHash = hash
+      }
       this.hideOriginalWinnersWrapper(existing)
       return
     }
+    this.lastDataHash = hash
 
     const container = document.createElement('div')
     container.className = `${CONTAINER_CLASS} ab-wt-entering`
@@ -189,10 +195,16 @@ export default class WinnersTickerModule extends BaseModule {
   private start(): void {
     this.run()
 
+    let obsPending = false
     this.mutationObserver = new MutationObserver(() => {
-      if (document.querySelector(`.${CONTAINER_CLASS}`)) return
-      const ref = this.findRef()
-      if (ref) this.fetchWinners((data) => this.render(ref.el, ref.pos, data))
+      if (obsPending || document.querySelector(`.${CONTAINER_CLASS}`)) return
+      obsPending = true
+      setTimeout(() => {
+        obsPending = false
+        if (document.querySelector(`.${CONTAINER_CLASS}`)) return
+        const ref = this.findRef()
+        if (ref) this.fetchWinners((data) => this.render(ref.el, ref.pos, data))
+      }, 500)
     })
     this.mutationObserver.observe(document.body, { childList: true, subtree: true })
 
