@@ -113,18 +113,21 @@ export default class CasinoNavReskinModule extends BaseModule {
 
   private stabilizeSearch(): void {
     const search = document.querySelector<HTMLElement>('.casino-search')
-    if (search) {
+    if (search && !search.hasAttribute('data-ab-stable')) {
+      search.setAttribute('data-ab-stable', '1')
       search.style.cssText +=
         'display:flex!important;flex-wrap:nowrap!important;overflow:hidden!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;'
     }
 
     const mobileWrapper = document.querySelector<HTMLElement>('.casino-search .search-box-wrapper')
-    if (mobileWrapper) {
+    if (mobileWrapper && !mobileWrapper.hasAttribute('data-ab-stable')) {
+      mobileWrapper.setAttribute('data-ab-stable', '1')
       mobileWrapper.style.cssText += 'flex:1 1 0%!important;min-width:0!important;overflow:hidden!important;'
     }
 
     const mobileField = document.querySelector<HTMLElement>('.casino-search .search-box')
-    if (mobileField) {
+    if (mobileField && !mobileField.hasAttribute('data-ab-stable')) {
+      mobileField.setAttribute('data-ab-stable', '1')
       mobileField.style.cssText += 'flex:1 1 0%!important;min-width:0!important;overflow:hidden!important;'
     }
   }

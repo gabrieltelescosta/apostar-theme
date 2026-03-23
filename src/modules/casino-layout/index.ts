@@ -86,13 +86,6 @@ export default class CasinoLayoutModule extends BaseModule {
       const match = inlineBg.match(/url\(["']?(.+?)["']?\)/)
       if (match?.[1] && match[1].length > 5) return match[1]
     }
-    try {
-      const computed = getComputedStyle(bg).backgroundImage
-      if (computed && computed !== 'none') {
-        const m = computed.match(/url\(["']?(.+?)["']?\)/)
-        if (m?.[1] && m[1].length > 5 && !m[1].includes('gradient')) return m[1]
-      }
-    } catch (_) { /* ignore */ }
     return null
   }
 
@@ -102,7 +95,8 @@ export default class CasinoLayoutModule extends BaseModule {
   }
 
   private normalizeImages(container: HTMLElement): void {
-    container.querySelectorAll<HTMLElement>('.tile-container__bg').forEach((bg) => {
+    container.querySelectorAll<HTMLElement>('.tile-container__bg:not([data-ab-img])').forEach((bg) => {
+      bg.setAttribute('data-ab-img', '1')
       const src = this.extractImageSrc(bg)
       if (!src) { this.applyFallback(bg); return }
 
@@ -424,15 +418,17 @@ export default class CasinoLayoutModule extends BaseModule {
       })
     }
 
-    this.styleSectionHeaders()
-    this.injectSeeMoreCards()
+    if (found) {
+      this.styleSectionHeaders()
+      this.injectSeeMoreCards()
 
-    document.querySelectorAll<HTMLElement>('[data-ab-casino] .tile-container.size-l').forEach((sl) => {
-      const wrapper = sl.closest<HTMLElement>('.swiper-slide') || sl.parentElement
-      if (wrapper && !wrapper.hasAttribute('data-ab-size-l')) {
-        wrapper.setAttribute('data-ab-size-l', 'true')
-      }
-    })
+      document.querySelectorAll<HTMLElement>('[data-ab-casino] .tile-container.size-l').forEach((sl) => {
+        const wrapper = sl.closest<HTMLElement>('.swiper-slide') || sl.parentElement
+        if (wrapper && !wrapper.hasAttribute('data-ab-size-l')) {
+          wrapper.setAttribute('data-ab-size-l', 'true')
+        }
+      })
+    }
 
     return found
   }
@@ -445,7 +441,7 @@ export default class CasinoLayoutModule extends BaseModule {
 
     let pending = false
     let lastRun = 0
-    const THROTTLE_MS = 350
+    const THROTTLE_MS = 500
     const obsOpts: MutationObserverInit = {
       childList: true,
       subtree: true,

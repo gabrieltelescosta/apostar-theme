@@ -514,6 +514,9 @@ $T: '.tile-container.tile-container';
     height: 40px !important;
     padding: initial !important;
   }
+  #{$S} #{$T}:hover {
+    transform: scale(1.03) !important;
+  }
   #{$S} .chips-item.casino__category__slider-arrow {
     display: none !important;
   }
