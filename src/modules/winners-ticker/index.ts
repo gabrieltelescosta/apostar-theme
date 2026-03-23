@@ -130,6 +130,13 @@ export default class WinnersTickerModule extends BaseModule {
     }
   }
 
+  private hideOriginalWinnersWrapper(ticker: HTMLElement): void {
+    const wrapper = document.querySelector<HTMLElement>('.casino__winners')
+    if (wrapper && !wrapper.contains(ticker)) {
+      wrapper.style.display = 'none'
+    }
+  }
+
   private render(
     ref: HTMLElement,
     position: 'before' | 'after',
@@ -149,6 +156,7 @@ export default class WinnersTickerModule extends BaseModule {
     container.className = `${CONTAINER_CLASS} ab-wt-entering`
     container.innerHTML = `<div class="ab-wt-track">${doubled}</div>`
     this.insertContainer(container, ref, position)
+    this.hideOriginalWinnersWrapper(container)
 
     requestAnimationFrame(() => {
       requestAnimationFrame(() => container.classList.remove('ab-wt-entering'))
