@@ -21,7 +21,7 @@
 
 @keyframes ab-wt-scroll {
   0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  100% { transform: translateX(var(--wt-offset, -50%)); }
 }
 
 .ab-wt-card {
@@ -83,6 +83,7 @@
 
 @media (min-width: 769px) {
   .casino__winners { display: none !important; }
+  .ab-wt-container { padding: 10px 0; }
 }
 
 @media (max-width: 768px) {

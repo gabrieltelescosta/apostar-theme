@@ -89,24 +89,31 @@ export default class CasinoNavReskinModule extends BaseModule {
     this.bodyObserver.observe(document.body, bodyOpts)
   }
 
+  private normalizeText(el: HTMLElement): void {
+    const raw = (el.textContent ?? '').trim()
+    if (!raw) return
+    const normalized = raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase()
+    if (el.textContent !== normalized) el.textContent = normalized
+  }
+
   private normalizeTexts(): void {
     this.isNormalizing = true
 
-    document.querySelectorAll<HTMLElement>('.casino-navigation-menu__item-text').forEach((el) => {
-      const raw = (el.textContent ?? '').trim()
-      if (!raw) return
-      const normalized = raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase()
-      if (el.textContent !== normalized) el.textContent = normalized
+    document.querySelectorAll<HTMLElement>(
+      '.casino-navigation-menu__item-text:not([data-ab-norm])',
+    ).forEach((el) => {
+      el.setAttribute('data-ab-norm', '1')
+      this.normalizeText(el)
     })
 
-    document
-      .querySelectorAll<HTMLElement>('.casino-providers__item, .casino-providers__item span')
-      .forEach((el) => {
-        const raw = (el.textContent ?? '').trim()
-        if (!raw) return
-        const normalized = raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase()
-        if (el.textContent !== normalized) el.textContent = normalized
-      })
+    document.querySelectorAll<HTMLElement>(
+      '.casino-providers__item:not([data-ab-norm])',
+    ).forEach((el) => {
+      el.setAttribute('data-ab-norm', '1')
+      const span = el.querySelector<HTMLElement>('span')
+      if (span) this.normalizeText(span)
+      else this.normalizeText(el)
+    })
 
     this.isNormalizing = false
   }

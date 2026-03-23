@@ -10,6 +10,7 @@ export default class CasinoFiltersModule extends BaseModule {
   selfManaged = true
 
   private observer: MutationObserver | null = null
+  private readonly obsOpts: MutationObserverInit = { childList: true, subtree: true }
 
   async init(config: ModuleEntry): Promise<void> {
     await super.init(config)
@@ -193,11 +194,13 @@ export default class CasinoFiltersModule extends BaseModule {
     this.observer = new MutationObserver(() => {
       clearTimeout(debounce)
       debounce = setTimeout(() => {
+        this.observer?.disconnect()
         this.injectFilterLabel()
         this.updateBadges()
         this.enhancePopup()
-      }, 80)
+        this.observer?.observe(document.body, this.obsOpts)
+      }, 300)
     })
-    this.observer.observe(document.body, { childList: true, subtree: true })
+    this.observer.observe(document.body, this.obsOpts)
   }
 }

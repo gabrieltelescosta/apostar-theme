@@ -10,6 +10,8 @@ export default class ProvidersBlockModule extends BaseModule {
   selfManaged = true
 
   private observer: MutationObserver | null = null
+  private obsPending = false
+  private readonly obsOpts: MutationObserverInit = { childList: true, subtree: true }
 
   async init(config: ModuleEntry): Promise<void> {
     await super.init(config)
@@ -81,7 +83,16 @@ export default class ProvidersBlockModule extends BaseModule {
 
   private start(): void {
     this.inject()
-    this.observer = new MutationObserver(() => this.inject())
-    this.observer.observe(document.body, { childList: true, subtree: true })
+    this.observer = new MutationObserver(() => {
+      if (this.obsPending) return
+      this.obsPending = true
+      setTimeout(() => {
+        this.obsPending = false
+        this.observer?.disconnect()
+        this.inject()
+        this.observer?.observe(document.body, this.obsOpts)
+      }, 400)
+    })
+    this.observer.observe(document.body, this.obsOpts)
   }
 }

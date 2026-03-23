@@ -18,6 +18,8 @@ export default class WinnersTickerModule extends BaseModule {
   private pollTimer: ReturnType<typeof setInterval> | null = null
   private mutationObserver: MutationObserver | null = null
   private lastDataHash = ''
+  private singleSetHTML = ''
+  private resizeTimer: ReturnType<typeof setTimeout> | null = null
 
   private get apiUrl(): string {
     return this.data<string>('apiUrl', '/api/gs/lastWinnings:list')
@@ -63,6 +65,8 @@ export default class WinnersTickerModule extends BaseModule {
 
   destroy(): void {
     if (this.pollTimer) { clearInterval(this.pollTimer); this.pollTimer = null }
+    if (this.resizeTimer) { clearTimeout(this.resizeTimer); this.resizeTimer = null }
+    window.removeEventListener('resize', this.handleResize)
     this.mutationObserver?.disconnect()
     this.mutationObserver = null
     document.querySelector(`.${CONTAINER_CLASS}`)?.remove()
@@ -138,21 +142,56 @@ export default class WinnersTickerModule extends BaseModule {
     }
   }
 
-  private render(
+  private ensureSeamless(container: HTMLElement): void {
+    const track = container.querySelector<HTMLElement>('.ab-wt-track')
+    if (!track || !this.singleSetHTML) return
+
+    const containerW = container.offsetWidth
+    if (containerW === 0) return
+
+    const probe = document.createElement('div')
+    probe.style.cssText =
+      'position:absolute;visibility:hidden;width:max-content;display:flex;flex-wrap:nowrap;'
+    probe.innerHTML = this.singleSetHTML
+    container.appendChild(probe)
+    const setW = probe.offsetWidth
+    container.removeChild(probe)
+
+    if (setW === 0) return
+
+    const copies = Math.max(2, Math.ceil(containerW / setW) + 1)
+    track.innerHTML = this.singleSetHTML.repeat(copies)
+
+    const SPEED_PX_PER_SEC = 50
+    const duration = setW / SPEED_PX_PER_SEC
+
+    track.style.setProperty('--wt-offset', `-${setW}px`)
+    track.style.animationDuration = `${duration}s`
+  }
+
+  private handleResize = (): void => {
+    if (this.resizeTimer) clearTimeout(this.resizeTimer)
+    this.resizeTimer = setTimeout(() => {
+      const container = document.querySelector<HTMLElement>(`.${CONTAINER_CLASS}`)
+      if (container) this.ensureSeamless(container)
+    }, 300)
+  }
+
+  private renderTicker(
     ref: HTMLElement,
     position: 'before' | 'after',
     data: WinnerItem[],
   ): void {
     const cardsHTML = data.map((item) => this.buildCardHTML(item)).join('')
-    const doubled = cardsHTML + cardsHTML
-    const existing = document.querySelector<HTMLElement>(`.${CONTAINER_CLASS}`)
+    this.singleSetHTML = cardsHTML
 
+    const existing = document.querySelector<HTMLElement>(`.${CONTAINER_CLASS}`)
     const hash = cardsHTML.length + ':' + (data[0]?.info.login ?? '')
+
     if (existing) {
       if (hash !== this.lastDataHash) {
-        const track = existing.querySelector('.ab-wt-track')
-        if (track) track.innerHTML = doubled
         this.lastDataHash = hash
+        this.ensureSeamless(existing)
       }
       this.hideOriginalWinnersWrapper(existing)
       return
@@ -161,12 +200,15 @@ export default class WinnersTickerModule extends BaseModule {
 
     const container = document.createElement('div')
     container.className = `${CONTAINER_CLASS} ab-wt-entering`
-    container.innerHTML = `<div class="ab-wt-track">${doubled}</div>`
+    container.innerHTML = `<div class="ab-wt-track">${cardsHTML}</div>`
     this.insertContainer(container, ref, position)
     this.hideOriginalWinnersWrapper(container)
 
     requestAnimationFrame(() => {
-      requestAnimationFrame(() => container.classList.remove('ab-wt-entering'))
+      requestAnimationFrame(() => {
+        container.classList.remove('ab-wt-entering')
+        this.ensureSeamless(container)
+      })
     })
   }
 
@@ -188,12 +230,14 @@ export default class WinnersTickerModule extends BaseModule {
   private run(): boolean {
     const ref = this.findRef()
     if (!ref) return false
-    this.fetchWinners((data) => this.render(ref.el, ref.pos, data))
+    this.fetchWinners((data) => this.renderTicker(ref.el, ref.pos, data))
     return true
   }
 
   private start(): void {
     this.run()
+
+    window.addEventListener('resize', this.handleResize)
 
     let obsPending = false
     this.mutationObserver = new MutationObserver(() => {
@@ -203,7 +247,7 @@ export default class WinnersTickerModule extends BaseModule {
         obsPending = false
         if (document.querySelector(`.${CONTAINER_CLASS}`)) return
         const ref = this.findRef()
-        if (ref) this.fetchWinners((data) => this.render(ref.el, ref.pos, data))
+        if (ref) this.fetchWinners((data) => this.renderTicker(ref.el, ref.pos, data))
       }, 500)
     })
     this.mutationObserver.observe(document.body, { childList: true, subtree: true })
@@ -211,7 +255,7 @@ export default class WinnersTickerModule extends BaseModule {
     this.pollTimer = setInterval(() => {
       const ref = this.findRef()
       if (!ref) return
-      this.fetchWinners((data) => this.render(ref.el, ref.pos, data))
+      this.fetchWinners((data) => this.renderTicker(ref.el, ref.pos, data))
     }, this.pollInterval)
   }
 }

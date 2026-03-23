@@ -12,6 +12,8 @@ export default class CashbackTagsModule extends BaseModule {
   selfManaged = true
 
   private observer: MutationObserver | null = null
+  private obsPending = false
+  private readonly obsOpts: MutationObserverInit = { childList: true, subtree: true }
   private gamesMap: string[] = []
   private allGames = false
 
@@ -24,8 +26,17 @@ export default class CashbackTagsModule extends BaseModule {
     injectStyles(styles, 'apw-styles-cashback-tags')
     this.applyTags()
 
-    this.observer = new MutationObserver(() => this.applyTags())
-    this.observer.observe(document.body, { childList: true, subtree: true })
+    this.observer = new MutationObserver(() => {
+      if (this.obsPending) return
+      this.obsPending = true
+      setTimeout(() => {
+        this.obsPending = false
+        this.observer?.disconnect()
+        this.applyTags()
+        this.observer?.observe(document.body, this.obsOpts)
+      }, 400)
+    })
+    this.observer.observe(document.body, this.obsOpts)
   }
 
   protected template(): string {
