@@ -109,6 +109,7 @@ $A: '[data-ab-pbr]';
 
   .provider-card__img {
     max-height: 20px !important;
+    min-width: 60px !important;
     width: auto !important;
     object-fit: contain !important;
     filter: brightness(0.9) !important;
@@ -123,5 +124,22 @@ $A: '[data-ab-pbr]';
     box-shadow: 0 0 16px rgba(233, 176, 13, 0.18) !important;
 
     .provider-card__name { color: #fff !important; font-weight: 700 !important; }
+  }
+
+  @media (min-width: 769px) {
+    .swiper {
+      overflow: visible !important;
+      -webkit-mask-image: none !important;
+      mask-image: none !important;
+    }
+
+    .swiper-wrapper {
+      flex-wrap: wrap !important;
+      gap: 10px !important;
+    }
+
+    .swiper-slide {
+      flex-shrink: 0;
+    }
   }
 }
