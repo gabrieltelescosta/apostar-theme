@@ -2,6 +2,7 @@ import { BaseModule } from '../base-module'
 import type { ModuleEntry } from '../../types/config'
 import { injectStyles } from '../../utils/dom'
 import { logger } from '../../core/logger'
+import { widgetGuard } from '../../core/widget-guard'
 import { apostarMoney } from '../../utils/money-rain'
 import styles from './cashback-bar.scss?inline'
 
@@ -63,6 +64,7 @@ export default class CashbackBarModule extends BaseModule {
       logger.info('Cashback bar rendered.')
     } catch (err) {
       logger.error('Cashback widget error:', err)
+      widgetGuard.report('cashback-bar', err)
     }
   }
 

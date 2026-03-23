@@ -1,5 +1,5 @@
-.cl-wrapper.cl-vertical   { display: none !important; }
-.game-item-wrapper         { display: none !important; }
+body.ab-wt-active .cl-wrapper.cl-vertical   { display: none !important; }
+body.ab-wt-active .game-item-wrapper         { display: none !important; }
 
 .ab-wt-container {
   overflow: hidden;
@@ -82,7 +82,7 @@
 }
 
 @media (min-width: 769px) {
-  .casino__winners { display: none !important; }
+  body.ab-wt-active .casino__winners { display: none !important; }
   .ab-wt-container { padding: 10px 0; }
 }
 

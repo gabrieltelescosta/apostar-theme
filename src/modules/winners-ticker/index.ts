@@ -2,6 +2,7 @@ import { BaseModule } from '../base-module'
 import type { ModuleEntry } from '../../types/config'
 import { injectStyles } from '../../utils/dom'
 import { domWatcher } from '../../core/dom-watcher'
+import { widgetGuard } from '../../core/widget-guard'
 import styles from './winners-ticker.scss?inline'
 
 interface WinnerItem {
@@ -11,6 +12,9 @@ interface WinnerItem {
 
 const CONTAINER_CLASS = 'ab-wt-container'
 const FONT_ID = 'apw-font-jost-winners'
+const STYLE_ID = 'apw-styles-winners-ticker'
+const BODY_CLASS = 'ab-wt-active'
+const ERROR_THRESHOLD = 2
 
 export default class WinnersTickerModule extends BaseModule {
   name = 'winners-ticker'
@@ -20,6 +24,8 @@ export default class WinnersTickerModule extends BaseModule {
   private lastDataHash = ''
   private singleSetHTML = ''
   private resizeTimer: ReturnType<typeof setTimeout> | null = null
+  private errorCount = 0
+  private fallen = false
 
   private get apiUrl(): string {
     return this.data<string>('apiUrl', '/api/gs/lastWinnings:list')
@@ -48,7 +54,7 @@ export default class WinnersTickerModule extends BaseModule {
       document.head.appendChild(font)
     }
 
-    injectStyles(styles, 'apw-styles-winners-ticker')
+    injectStyles(styles, STYLE_ID)
 
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => this.start())
@@ -68,6 +74,7 @@ export default class WinnersTickerModule extends BaseModule {
     if (this.resizeTimer) { clearTimeout(this.resizeTimer); this.resizeTimer = null }
     window.removeEventListener('resize', this.handleResize)
     domWatcher.unregister(this.name)
+    document.body.classList.remove(BODY_CLASS)
     document.querySelector(`.${CONTAINER_CLASS}`)?.remove()
   }
 
@@ -102,6 +109,8 @@ export default class WinnersTickerModule extends BaseModule {
   // ── API ──
 
   private fetchWinners(cb: (data: WinnerItem[]) => void): void {
+    if (widgetGuard.isNuked || this.fallen) return
+
     fetch(this.apiUrl, {
       method: 'GET',
       headers: {
@@ -113,11 +122,23 @@ export default class WinnersTickerModule extends BaseModule {
       },
       credentials: 'include',
     })
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) {
+          throw new Error(`HTTP ${r.status}`)
+        }
+        return r.json()
+      })
       .then((data: unknown) => {
+        this.errorCount = 0
         if (Array.isArray(data) && data.length > 0) cb(data as WinnerItem[])
       })
-      .catch((e: unknown) => console.warn('[Winners Ticker] API error:', e))
+      .catch((e: unknown) => {
+        this.errorCount++
+        widgetGuard.report('winners-ticker', e)
+        if (this.errorCount >= ERROR_THRESHOLD) {
+          this.fallbackToNative()
+        }
+      })
   }
 
   // ── Render ──
@@ -233,12 +254,36 @@ export default class WinnersTickerModule extends BaseModule {
     return true
   }
 
+  private fallbackToNative(): void {
+    if (this.fallen) return
+    this.fallen = true
+
+    if (this.pollTimer) { clearInterval(this.pollTimer); this.pollTimer = null }
+    if (this.resizeTimer) { clearTimeout(this.resizeTimer); this.resizeTimer = null }
+    window.removeEventListener('resize', this.handleResize)
+    domWatcher.unregister(this.name)
+
+    document.querySelector(`.${CONTAINER_CLASS}`)?.remove()
+    document.body.classList.remove(BODY_CLASS)
+    document.getElementById(STYLE_ID)?.remove()
+
+    const nativeWinners = document.querySelector<HTMLElement>('.casino__winners')
+    if (nativeWinners) nativeWinners.style.removeProperty('display')
+
+    console.warn('[Winners Ticker] Fallback to native after consecutive errors.')
+  }
+
   private start(): void {
+    document.body.classList.add(BODY_CLASS)
     this.run()
 
     window.addEventListener('resize', this.handleResize)
 
     domWatcher.register(this.name, () => {
+      if (widgetGuard.isNuked || this.fallen) {
+        domWatcher.unregister(this.name)
+        return
+      }
       if (document.querySelector(`.${CONTAINER_CLASS}`)) {
         domWatcher.unregister(this.name)
         return
@@ -248,6 +293,11 @@ export default class WinnersTickerModule extends BaseModule {
     }, 40)
 
     this.pollTimer = setInterval(() => {
+      if (widgetGuard.isNuked || this.fallen) {
+        clearInterval(this.pollTimer!)
+        this.pollTimer = null
+        return
+      }
       const ref = this.findRef()
       if (!ref) return
       this.fetchWinners((data) => this.renderTicker(ref.el, ref.pos, data))

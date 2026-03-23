@@ -1,3 +1,5 @@
+import { widgetGuard } from './widget-guard'
+
 type WatcherCallback = () => void
 
 interface WatcherEntry {
@@ -22,6 +24,7 @@ class DOMWatcher {
   }
 
   register(id: string, cb: WatcherCallback, priority = 50): void {
+    if (widgetGuard.isNuked) return
     this.entries.set(id, { cb, priority })
     if (!this.started) this.start()
   }
@@ -46,7 +49,7 @@ class DOMWatcher {
   }
 
   private handle(): void {
-    if (this.pending) return
+    if (this.pending || widgetGuard.isNuked) return
     this.pending = true
 
     const elapsed = Date.now() - this.lastRun
@@ -54,14 +57,19 @@ class DOMWatcher {
 
     setTimeout(() => {
       requestAnimationFrame(() => {
+        if (widgetGuard.isNuked) {
+          this.stop()
+          return
+        }
+
         this.observer?.disconnect()
 
-        const sorted = [...this.entries.values()].sort((a, b) => a.priority - b.priority)
-        for (const entry of sorted) {
+        const sorted = [...this.entries.entries()].sort((a, b) => a[1].priority - b[1].priority)
+        for (const [id, entry] of sorted) {
           try {
             entry.cb()
           } catch (e) {
-            console.warn('[DOMWatcher]', e)
+            widgetGuard.report(`dom-watcher:${id}`, e)
           }
         }
 

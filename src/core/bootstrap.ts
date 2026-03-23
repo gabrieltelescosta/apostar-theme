@@ -2,6 +2,7 @@ import { loadGlobalConfig, loadPageConfig } from './config'
 import { moduleRegistry } from './module-registry'
 import { enableDebug, logger } from './logger'
 import { eventBus } from './event-bus'
+import { widgetGuard } from './widget-guard'
 import { injectStyles } from '../utils/dom'
 import type { ModuleEntry } from '../types/config'
 import type { WidgetModule } from '../types/modules'
@@ -130,28 +131,36 @@ async function loadAndRenderModule(entry: ModuleEntry) {
     logger.info(`Module "${entry.type}" mounted.`)
   } catch (err) {
     logger.error(`Failed to load module "${entry.type}":`, err)
+    widgetGuard.report(entry.type, err)
   }
 }
 
 export async function bootstrap() {
-  logger.info('Widget bootstrap started.')
+  try {
+    logger.info('Widget bootstrap started.')
 
-  const globalCfg = await loadGlobalConfig()
-  enableDebug(globalCfg.debug)
+    widgetGuard.setNukeCallback(destroyAll)
 
-  injectStyles(globalStyles, 'apw-global-styles')
+    const globalCfg = await loadGlobalConfig()
+    enableDebug(globalCfg.debug)
 
-  const pageCfg = await loadPageConfig()
+    injectStyles(globalStyles, 'apw-global-styles')
 
-  if (pageCfg.modules.length === 0) {
-    logger.info('No modules to render for this page.')
-    return
+    const pageCfg = await loadPageConfig()
+
+    if (pageCfg.modules.length === 0) {
+      logger.info('No modules to render for this page.')
+      return
+    }
+
+    await Promise.allSettled(pageCfg.modules.map(loadAndRenderModule))
+
+    eventBus.emit('widget:ready')
+    logger.info('Widget bootstrap complete.')
+  } catch (err) {
+    logger.error('Bootstrap fatal error:', err)
+    widgetGuard.report('bootstrap', err)
   }
-
-  await Promise.allSettled(pageCfg.modules.map(loadAndRenderModule))
-
-  eventBus.emit('widget:ready')
-  logger.info('Widget bootstrap complete.')
 }
 
 export function destroyAll() {
@@ -163,6 +172,10 @@ export function destroyAll() {
     }
   })
   activeModules.length = 0
+
+  document.querySelectorAll<HTMLStyleElement>('style[id^="apw-"]').forEach((s) => s.remove())
+  document.querySelectorAll('[data-apw-module]').forEach((el) => el.remove())
+
   eventBus.clear()
   logger.info('All modules destroyed.')
 }
