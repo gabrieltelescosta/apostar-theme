@@ -1,6 +1,7 @@
 import { BaseModule } from '../base-module'
 import type { ModuleEntry } from '../../types/config'
 import { injectStyles } from '../../utils/dom'
+import { domWatcher } from '../../core/dom-watcher'
 import styles from './casino-filters.scss?inline'
 
 const FILTER_SELECTOR = '.casino-game-list__header-top .chips-item'
@@ -8,9 +9,6 @@ const FILTER_SELECTOR = '.casino-game-list__header-top .chips-item'
 export default class CasinoFiltersModule extends BaseModule {
   name = 'casino-filters'
   selfManaged = true
-
-  private observer: MutationObserver | null = null
-  private readonly obsOpts: MutationObserverInit = { childList: true, subtree: true }
 
   async init(config: ModuleEntry): Promise<void> {
     await super.init(config)
@@ -30,8 +28,7 @@ export default class CasinoFiltersModule extends BaseModule {
   render(): void {}
 
   destroy(): void {
-    this.observer?.disconnect()
-    this.observer = null
+    domWatcher.unregister(this.name)
   }
 
   // ── Helpers ──
@@ -189,18 +186,10 @@ export default class CasinoFiltersModule extends BaseModule {
 
   private start(): void {
     this.injectFilterLabel()
-
-    let debounce: ReturnType<typeof setTimeout>
-    this.observer = new MutationObserver(() => {
-      clearTimeout(debounce)
-      debounce = setTimeout(() => {
-        this.observer?.disconnect()
-        this.injectFilterLabel()
-        this.updateBadges()
-        this.enhancePopup()
-        this.observer?.observe(document.body, this.obsOpts)
-      }, 300)
-    })
-    this.observer.observe(document.body, this.obsOpts)
+    domWatcher.register(this.name, () => {
+      this.injectFilterLabel()
+      this.updateBadges()
+      this.enhancePopup()
+    }, 30)
   }
 }

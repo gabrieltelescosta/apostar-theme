@@ -1,6 +1,7 @@
 import { BaseModule } from '../base-module'
 import type { ModuleEntry } from '../../types/config'
 import { injectStyles } from '../../utils/dom'
+import { domWatcher } from '../../core/dom-watcher'
 import styles from './cashback-tags.scss?inline'
 
 const TAG_CLASS = 'ab-cb-tag'
@@ -11,9 +12,6 @@ export default class CashbackTagsModule extends BaseModule {
   name = 'cashback-tags'
   selfManaged = true
 
-  private observer: MutationObserver | null = null
-  private obsPending = false
-  private readonly obsOpts: MutationObserverInit = { childList: true, subtree: true }
   private gamesMap: string[] = []
   private allGames = false
 
@@ -25,18 +23,7 @@ export default class CashbackTagsModule extends BaseModule {
 
     injectStyles(styles, 'apw-styles-cashback-tags')
     this.applyTags()
-
-    this.observer = new MutationObserver(() => {
-      if (this.obsPending) return
-      this.obsPending = true
-      setTimeout(() => {
-        this.obsPending = false
-        this.observer?.disconnect()
-        this.applyTags()
-        this.observer?.observe(document.body, this.obsOpts)
-      }, 400)
-    })
-    this.observer.observe(document.body, this.obsOpts)
+    domWatcher.register(this.name, () => this.applyTags(), 30)
   }
 
   protected template(): string {
@@ -46,8 +33,7 @@ export default class CashbackTagsModule extends BaseModule {
   render(): void {}
 
   destroy(): void {
-    this.observer?.disconnect()
-    this.observer = null
+    domWatcher.unregister(this.name)
     document.querySelectorAll(`.${TAG_CLASS}`).forEach((el) => el.remove())
     document.querySelectorAll(`.${FLASH_CLASS}`).forEach((el) => el.remove())
     document.querySelectorAll(`[${MARKED_ATTR}]`).forEach((tile) => tile.removeAttribute(MARKED_ATTR))

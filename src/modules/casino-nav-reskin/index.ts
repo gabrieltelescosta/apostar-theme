@@ -1,6 +1,7 @@
 import { BaseModule } from '../base-module'
 import type { ModuleEntry } from '../../types/config'
 import { injectStyles } from '../../utils/dom'
+import { domWatcher } from '../../core/dom-watcher'
 import styles from './casino-nav-reskin.scss?inline'
 
 export default class CasinoNavReskinModule extends BaseModule {
@@ -8,8 +9,6 @@ export default class CasinoNavReskinModule extends BaseModule {
   selfManaged = true
 
   private headObserver: MutationObserver | null = null
-  private bodyObserver: MutationObserver | null = null
-  private isNormalizing = false
 
   private readonly FONT_ID = 'apw-font-jost'
 
@@ -42,9 +41,8 @@ export default class CasinoNavReskinModule extends BaseModule {
 
   destroy(): void {
     this.headObserver?.disconnect()
-    this.bodyObserver?.disconnect()
     this.headObserver = null
-    this.bodyObserver = null
+    domWatcher.unregister(this.name)
   }
 
   // ── Private ──
@@ -63,30 +61,14 @@ export default class CasinoNavReskinModule extends BaseModule {
     })
     this.headObserver.observe(document.head, { childList: true })
 
-    let iconPending = false
-    let debounce: ReturnType<typeof setTimeout>
-    const bodyOpts: MutationObserverInit = { childList: true, subtree: true }
-    this.bodyObserver = new MutationObserver(() => {
-      if (this.isNormalizing) return
-      if (!iconPending) {
-        iconPending = true
-        requestAnimationFrame(() => {
-          this.replaceNavIcons()
-          iconPending = false
-        })
+    domWatcher.register(this.name, () => {
+      if (!document.getElementById('apw-styles-casino-nav-reskin')) {
+        injectStyles(styles, 'apw-styles-casino-nav-reskin')
       }
-      clearTimeout(debounce)
-      debounce = setTimeout(() => {
-        this.bodyObserver?.disconnect()
-        if (!document.getElementById('apw-styles-casino-nav-reskin')) {
-          injectStyles(styles, 'apw-styles-casino-nav-reskin')
-        }
-        this.normalizeTexts()
-        this.stabilizeSearch()
-        this.bodyObserver?.observe(document.body, bodyOpts)
-      }, 250)
-    })
-    this.bodyObserver.observe(document.body, bodyOpts)
+      this.replaceNavIcons()
+      this.normalizeTexts()
+      this.stabilizeSearch()
+    }, 10)
   }
 
   private normalizeText(el: HTMLElement): void {
@@ -97,8 +79,6 @@ export default class CasinoNavReskinModule extends BaseModule {
   }
 
   private normalizeTexts(): void {
-    this.isNormalizing = true
-
     document.querySelectorAll<HTMLElement>(
       '.casino-navigation-menu__item-text:not([data-ab-norm])',
     ).forEach((el) => {
@@ -114,8 +94,6 @@ export default class CasinoNavReskinModule extends BaseModule {
       if (span) this.normalizeText(span)
       else this.normalizeText(el)
     })
-
-    this.isNormalizing = false
   }
 
   private stabilizeSearch(): void {

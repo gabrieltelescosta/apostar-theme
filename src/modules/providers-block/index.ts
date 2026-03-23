@@ -1,6 +1,7 @@
 import { BaseModule } from '../base-module'
 import type { ModuleEntry } from '../../types/config'
 import { injectStyles } from '../../utils/dom'
+import { domWatcher } from '../../core/dom-watcher'
 import styles from './providers-block.scss?inline'
 
 const ATTR = 'data-ab-pbr'
@@ -8,10 +9,6 @@ const ATTR = 'data-ab-pbr'
 export default class ProvidersBlockModule extends BaseModule {
   name = 'providers-block'
   selfManaged = true
-
-  private observer: MutationObserver | null = null
-  private obsPending = false
-  private readonly obsOpts: MutationObserverInit = { childList: true, subtree: true }
 
   async init(config: ModuleEntry): Promise<void> {
     await super.init(config)
@@ -31,8 +28,7 @@ export default class ProvidersBlockModule extends BaseModule {
   render(): void {}
 
   destroy(): void {
-    this.observer?.disconnect()
-    this.observer = null
+    domWatcher.unregister(this.name)
     document.querySelectorAll(`[${ATTR}]`).forEach((el) => el.removeAttribute(ATTR))
   }
 
@@ -83,16 +79,6 @@ export default class ProvidersBlockModule extends BaseModule {
 
   private start(): void {
     this.inject()
-    this.observer = new MutationObserver(() => {
-      if (this.obsPending) return
-      this.obsPending = true
-      setTimeout(() => {
-        this.obsPending = false
-        this.observer?.disconnect()
-        this.inject()
-        this.observer?.observe(document.body, this.obsOpts)
-      }, 400)
-    })
-    this.observer.observe(document.body, this.obsOpts)
+    domWatcher.register(this.name, () => this.inject(), 30)
   }
 }

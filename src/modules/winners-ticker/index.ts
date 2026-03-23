@@ -1,6 +1,7 @@
 import { BaseModule } from '../base-module'
 import type { ModuleEntry } from '../../types/config'
 import { injectStyles } from '../../utils/dom'
+import { domWatcher } from '../../core/dom-watcher'
 import styles from './winners-ticker.scss?inline'
 
 interface WinnerItem {
@@ -16,7 +17,6 @@ export default class WinnersTickerModule extends BaseModule {
   selfManaged = true
 
   private pollTimer: ReturnType<typeof setInterval> | null = null
-  private mutationObserver: MutationObserver | null = null
   private lastDataHash = ''
   private singleSetHTML = ''
   private resizeTimer: ReturnType<typeof setTimeout> | null = null
@@ -67,8 +67,7 @@ export default class WinnersTickerModule extends BaseModule {
     if (this.pollTimer) { clearInterval(this.pollTimer); this.pollTimer = null }
     if (this.resizeTimer) { clearTimeout(this.resizeTimer); this.resizeTimer = null }
     window.removeEventListener('resize', this.handleResize)
-    this.mutationObserver?.disconnect()
-    this.mutationObserver = null
+    domWatcher.unregister(this.name)
     document.querySelector(`.${CONTAINER_CLASS}`)?.remove()
   }
 
@@ -239,18 +238,14 @@ export default class WinnersTickerModule extends BaseModule {
 
     window.addEventListener('resize', this.handleResize)
 
-    let obsPending = false
-    this.mutationObserver = new MutationObserver(() => {
-      if (obsPending || document.querySelector(`.${CONTAINER_CLASS}`)) return
-      obsPending = true
-      setTimeout(() => {
-        obsPending = false
-        if (document.querySelector(`.${CONTAINER_CLASS}`)) return
-        const ref = this.findRef()
-        if (ref) this.fetchWinners((data) => this.renderTicker(ref.el, ref.pos, data))
-      }, 500)
-    })
-    this.mutationObserver.observe(document.body, { childList: true, subtree: true })
+    domWatcher.register(this.name, () => {
+      if (document.querySelector(`.${CONTAINER_CLASS}`)) {
+        domWatcher.unregister(this.name)
+        return
+      }
+      const ref = this.findRef()
+      if (ref) this.fetchWinners((data) => this.renderTicker(ref.el, ref.pos, data))
+    }, 40)
 
     this.pollTimer = setInterval(() => {
       const ref = this.findRef()

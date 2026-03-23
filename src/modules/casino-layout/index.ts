@@ -1,6 +1,7 @@
 import { BaseModule } from '../base-module'
 import type { ModuleEntry } from '../../types/config'
 import { injectStyles } from '../../utils/dom'
+import { domWatcher } from '../../core/dom-watcher'
 import styles from './casino-layout.scss?inline'
 
 const TARGET_SELECTOR = '.casino__layout__wrapper'
@@ -24,7 +25,6 @@ export default class CasinoLayoutModule extends BaseModule {
   name = 'casino-layout'
   selfManaged = true
 
-  private observer: MutationObserver | null = null
 
   async init(config: ModuleEntry): Promise<void> {
     await super.init(config)
@@ -44,8 +44,7 @@ export default class CasinoLayoutModule extends BaseModule {
   render(): void {}
 
   destroy(): void {
-    this.observer?.disconnect()
-    this.observer = null
+    domWatcher.unregister(this.name)
     document.querySelectorAll('[data-ab-casino]').forEach((el) => el.removeAttribute('data-ab-casino'))
     document.querySelectorAll('[data-ab-layout]').forEach((el) => el.removeAttribute('data-ab-layout'))
     document.querySelectorAll('[data-ab-header]').forEach((el) => el.removeAttribute('data-ab-header'))
@@ -433,39 +432,11 @@ export default class CasinoLayoutModule extends BaseModule {
     return found
   }
 
-  // ── Init / MutationObserver ──
+  // ── Init ──
 
   private start(): void {
     injectStyles(styles, 'apw-styles-casino-layout')
     this.enhance()
-
-    let pending = false
-    let lastRun = 0
-    const THROTTLE_MS = 600
-    const obsOpts: MutationObserverInit = {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ['src', 'data-src', 'data-image', 'data-lazy', 'data-original'],
-    }
-
-    this.observer = new MutationObserver((mutations) => {
-      if (pending) return
-      const dominated = mutations.some((m) => m.addedNodes.length > 0)
-      if (!dominated) return
-      pending = true
-      const elapsed = Date.now() - lastRun
-      const wait = Math.max(0, THROTTLE_MS - elapsed)
-      setTimeout(() => {
-        requestAnimationFrame(() => {
-          this.observer?.disconnect()
-          this.enhance()
-          lastRun = Date.now()
-          pending = false
-          this.observer?.observe(document.documentElement, obsOpts)
-        })
-      }, wait)
-    })
-    this.observer.observe(document.documentElement, obsOpts)
+    domWatcher.register(this.name, () => this.enhance(), 20)
   }
 }
