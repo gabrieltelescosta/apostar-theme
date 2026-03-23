@@ -118,7 +118,23 @@ export default class WinnersTickerModule extends BaseModule {
 
   // ── Render ──
 
-  private render(wrapper: HTMLElement, data: WinnerItem[]): void {
+  private insertContainer(
+    container: HTMLElement,
+    ref: HTMLElement,
+    position: 'before' | 'after',
+  ): void {
+    if (position === 'before') {
+      ref.parentNode?.insertBefore(container, ref)
+    } else {
+      ref.insertAdjacentElement('afterend', container)
+    }
+  }
+
+  private render(
+    ref: HTMLElement,
+    position: 'before' | 'after',
+    data: WinnerItem[],
+  ): void {
     const cardsHTML = data.map((item) => this.buildCardHTML(item)).join('')
     const doubled = cardsHTML + cardsHTML
     const existing = document.querySelector<HTMLElement>(`.${CONTAINER_CLASS}`)
@@ -132,7 +148,7 @@ export default class WinnersTickerModule extends BaseModule {
     const container = document.createElement('div')
     container.className = `${CONTAINER_CLASS} ab-wt-entering`
     container.innerHTML = `<div class="ab-wt-track">${doubled}</div>`
-    wrapper.parentNode?.insertBefore(container, wrapper)
+    this.insertContainer(container, ref, position)
 
     requestAnimationFrame(() => {
       requestAnimationFrame(() => container.classList.remove('ab-wt-entering'))
@@ -141,10 +157,18 @@ export default class WinnersTickerModule extends BaseModule {
 
   // ── Init / polling ──
 
+  private findRef(): { el: HTMLElement; pos: 'before' | 'after' } | null {
+    const mobile = document.querySelector<HTMLElement>('.cl-wrapper.cl-horizontal')
+    if (mobile) return { el: mobile, pos: 'before' }
+    const desktop = document.querySelector<HTMLElement>('header.header-layout')
+    if (desktop) return { el: desktop, pos: 'after' }
+    return null
+  }
+
   private run(): boolean {
-    const wrapper = document.querySelector<HTMLElement>('.cl-wrapper.cl-horizontal')
-    if (!wrapper) return false
-    this.fetchWinners((data) => this.render(wrapper, data))
+    const ref = this.findRef()
+    if (!ref) return false
+    this.fetchWinners((data) => this.render(ref.el, ref.pos, data))
     return true
   }
 
@@ -152,17 +176,16 @@ export default class WinnersTickerModule extends BaseModule {
     this.run()
 
     this.mutationObserver = new MutationObserver(() => {
-      const wrapper = document.querySelector<HTMLElement>('.cl-wrapper.cl-horizontal')
-      if (wrapper && !document.querySelector(`.${CONTAINER_CLASS}`)) {
-        this.fetchWinners((data) => this.render(wrapper, data))
-      }
+      if (document.querySelector(`.${CONTAINER_CLASS}`)) return
+      const ref = this.findRef()
+      if (ref) this.fetchWinners((data) => this.render(ref.el, ref.pos, data))
     })
     this.mutationObserver.observe(document.body, { childList: true, subtree: true })
 
     this.pollTimer = setInterval(() => {
-      const wrapper = document.querySelector<HTMLElement>('.cl-wrapper.cl-horizontal')
-      if (!wrapper) return
-      this.fetchWinners((data) => this.render(wrapper, data))
+      const ref = this.findRef()
+      if (!ref) return
+      this.fetchWinners((data) => this.render(ref.el, ref.pos, data))
     }, this.pollInterval)
   }
 }

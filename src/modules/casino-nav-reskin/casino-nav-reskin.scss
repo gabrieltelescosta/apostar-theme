@@ -16,12 +16,22 @@
 
 .casino-navigation-menu {
   padding: 6px 10px 4px !important;
-  margin-bottom: 2px !important;
+  margin-bottom: initial !important;
   background: linear-gradient(180deg, #004786 0%, #003a6e 100%) !important;
-  border-bottom: 1px solid rgba(233, 176, 13, 0.08) !important;
+  border-bottom: initial !important;
   font-family: 'Jost', 'Open Sans', system-ui, sans-serif !important;
   animation: ab-nav-fade 0.4s ease-out !important;
   position: relative !important;
+}
+
+.casino-providers.navigation-2,
+.casino-providers.navigation-4,
+.casino-providers.navigation-5 {
+  border-top: initial !important;
+}
+
+.casino-navigation-menu.navigation-5 .casino-navigation-menu__list-dropdown {
+  border-top: initial !important;
 }
 
 .casino-navigation-menu__list {
