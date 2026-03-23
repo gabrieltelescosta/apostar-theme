@@ -444,12 +444,23 @@ export default class CasinoLayoutModule extends BaseModule {
     this.enhance()
 
     let pending = false
+    let lastRun = 0
+    const THROTTLE_MS = 300
+
     this.observer = new MutationObserver((mutations) => {
       if (pending) return
       const dominated = mutations.some((m) => m.addedNodes.length > 0 || m.type === 'attributes')
       if (!dominated) return
       pending = true
-      requestAnimationFrame(() => { this.enhance(); pending = false })
+      const elapsed = Date.now() - lastRun
+      const wait = Math.max(0, THROTTLE_MS - elapsed)
+      setTimeout(() => {
+        requestAnimationFrame(() => {
+          this.enhance()
+          lastRun = Date.now()
+          pending = false
+        })
+      }, wait)
     })
     this.observer.observe(document.documentElement, {
       childList: true,

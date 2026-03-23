@@ -63,21 +63,27 @@ export default class CasinoNavReskinModule extends BaseModule {
     })
     this.headObserver.observe(document.head, { childList: true })
 
+    let iconPending = false
     let debounce: ReturnType<typeof setTimeout>
     this.bodyObserver = new MutationObserver(() => {
       if (this.isNormalizing) return
-      this.replaceNavIcons()
+      if (!iconPending) {
+        iconPending = true
+        requestAnimationFrame(() => {
+          this.replaceNavIcons()
+          iconPending = false
+        })
+      }
       clearTimeout(debounce)
       debounce = setTimeout(() => {
         injectStyles(styles, 'apw-styles-casino-nav-reskin')
         this.normalizeTexts()
         this.stabilizeSearch()
-      }, 80)
+      }, 200)
     })
     this.bodyObserver.observe(document.body, {
       childList: true,
       subtree: true,
-      characterData: true,
     })
   }
 

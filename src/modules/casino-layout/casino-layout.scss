@@ -509,6 +509,17 @@ $T: '.tile-container.tile-container';
   #{$S} .casino__category__title {
     font-size: 1rem !important;
   }
+  #{$S} .casino__category__icon {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    overflow: hidden !important;
+    position: relative !important;
+    border: 1.5px solid rgba(233, 176, 13, 0.4) !important;
+    box-shadow: 0 2px 8px rgba(233, 176, 13, 0.12), 0 2px 8px rgba(4, 9, 28, 0.5) !important;
+    background: radial-gradient(circle at center, #4a81bf 0%, #004786 70%, #002a5c 100%) !important;
+    padding: 6px !important;
+  }
   #{$S} .tile-container__favorite { width: 34px !important; height: 34px !important; }
   #{$S} .tile-container__favorite svg { width: 22px !important; height: 22px !important; }
 }
