@@ -57,6 +57,14 @@
           "header.header-mobile-layout"
         ]
       }
+    },
+    {
+      "type": "footer-reskin",
+      "data": {}
+    },
+    {
+      "type": "static-content",
+      "data": {}
     }
   ]
 }

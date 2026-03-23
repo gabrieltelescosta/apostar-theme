@@ -23,6 +23,8 @@ moduleRegistry.register('winners-ticker',    () => import('./modules/winners-tic
 moduleRegistry.register('casino-filters',    () => import('./modules/casino-filters/index'))
 moduleRegistry.register('providers-block',   () => import('./modules/providers-block/index'))
 moduleRegistry.register('cashback-bar',      () => import('./modules/cashback-bar/index'))
+moduleRegistry.register('footer-reskin',    () => import('./modules/footer-reskin/index'))
+moduleRegistry.register('static-content',   () => import('./modules/static-content/index'))
 
 window.ApostarWidget = {
   destroy: destroyAll,
