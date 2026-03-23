@@ -41,7 +41,15 @@ export default class FooterReskinModule extends BaseModule {
 
   private inject(): void {
     const footer = document.querySelector<HTMLElement>('footer.footer')
-    if (!footer || footer.hasAttribute(ATTR)) return
-    footer.setAttribute(ATTR, '1')
+    if (footer && !footer.hasAttribute(ATTR)) {
+      footer.setAttribute(ATTR, '1')
+    }
+
+    const mobileFooter =
+      document.querySelector<HTMLElement>('.menu-footer-container') ||
+      document.querySelector<HTMLElement>('[class*="menu-footer"]')
+    if (mobileFooter && !mobileFooter.hasAttribute(ATTR)) {
+      mobileFooter.setAttribute(ATTR, '1')
+    }
   }
 }
