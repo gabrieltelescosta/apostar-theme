@@ -141,5 +141,9 @@ $A: '[data-ab-pbr]';
     .swiper-slide {
       flex-shrink: 0;
     }
+
+    .casino-providers-block__slider-arrow svg.icon {
+      display: none !important;
+    }
   }
 }

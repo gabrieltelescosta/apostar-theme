@@ -52,6 +52,7 @@ $T: '.tile-container.tile-container';
 
 // ── 0c. Exclude providers block from grid ──
 #{$S} .casino-providers-block .swiper-wrapper {
+  display: flex !important;
   grid-template-columns: none !important;
 }
 
