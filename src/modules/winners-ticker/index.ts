@@ -171,11 +171,8 @@ export default class WinnersTickerModule extends BaseModule {
       const mobile = document.querySelector<HTMLElement>('.cl-wrapper.cl-horizontal')
       if (mobile) return { el: mobile, pos: 'before' }
     }
-    const header =
-      document.querySelector<HTMLElement>('header.header-layout') ||
-      document.querySelector<HTMLElement>('.header.header-3') ||
-      document.querySelector<HTMLElement>('.header')
-    if (header) return { el: header, pos: 'after' }
+    const sliders = document.querySelector<HTMLElement>('.casino__sliders')
+    if (sliders) return { el: sliders, pos: 'before' }
     const fallback = document.querySelector<HTMLElement>('.cl-wrapper.cl-horizontal')
     if (fallback) return { el: fallback, pos: 'before' }
     return null
