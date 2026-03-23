@@ -266,6 +266,10 @@ $T: '.tile-container.tile-container';
 // Anti-flash
 .casino__category__header .chips-item { opacity: 0 !important; transition: opacity 0.25s ease !important; }
 
+#{$S} .casino__category {
+  margin-top: initial !important;
+}
+
 // ── 9b. Casino category header ──
 #{$S} .casino__category__header {
   display: flex !important;
