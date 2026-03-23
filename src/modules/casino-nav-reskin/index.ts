@@ -8,8 +8,6 @@ export default class CasinoNavReskinModule extends BaseModule {
   name = 'casino-nav-reskin'
   selfManaged = true
 
-  private headObserver: MutationObserver | null = null
-
   private readonly FONT_ID = 'apw-font-jost'
 
   private readonly NAV_ICON_MAP: Record<string, string> = {
@@ -40,8 +38,6 @@ export default class CasinoNavReskinModule extends BaseModule {
   render(): void {}
 
   destroy(): void {
-    this.headObserver?.disconnect()
-    this.headObserver = null
     domWatcher.unregister(this.name)
   }
 
@@ -53,13 +49,6 @@ export default class CasinoNavReskinModule extends BaseModule {
     this.stabilizeSearch()
     this.setupScrollFade()
     setTimeout(() => this.resetCategoryScroll(), 150)
-
-    this.headObserver = new MutationObserver(() => {
-      if (!document.getElementById('apw-styles-casino-nav-reskin')) {
-        injectStyles(styles, 'apw-styles-casino-nav-reskin')
-      }
-    })
-    this.headObserver.observe(document.head, { childList: true })
 
     domWatcher.register(this.name, () => {
       if (!document.getElementById('apw-styles-casino-nav-reskin')) {

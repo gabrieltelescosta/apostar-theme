@@ -14,7 +14,7 @@ class DOMWatcher {
   private lastRun = 0
   private started = false
 
-  private static readonly THROTTLE_MS = 350
+  private static readonly THROTTLE_MS = 500
 
   private static readonly OPTS: MutationObserverInit = {
     childList: true,

@@ -303,14 +303,8 @@ export default class CasinoLayoutModule extends BaseModule {
       }
 
       const tileCount = grid.querySelectorAll('.tile-container, .swiper-slide').length
-      const computedCols = getComputedStyle(grid).gridTemplateColumns
-      let colCount = 2
-      if (computedCols && computedCols !== 'none') {
-        colCount = computedCols.split(' ').length
-      } else {
-        const w = window.innerWidth
-        colCount = w >= 769 ? 4 : w >= 400 ? 3 : 2
-      }
+      const w = window.innerWidth
+      const colCount = w >= 769 ? 6 : w >= 400 ? 3 : 2
       if (tileCount > 0 && tileCount % colCount === 0) return
 
       const card = document.createElement('div')
@@ -370,6 +364,11 @@ export default class CasinoLayoutModule extends BaseModule {
   // ── Main enhance ──
 
   private enhance(): boolean {
+    const hasNewTiles = document.querySelector('.tile-container:not([data-ab-layout])')
+    if (!hasNewTiles && document.querySelector('[data-ab-casino]')) {
+      return false
+    }
+
     let found = false
 
     const target = document.querySelector<HTMLElement>(TARGET_SELECTOR)
