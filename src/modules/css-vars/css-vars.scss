@@ -21,6 +21,13 @@ html:root[theme='dark'] {
   height: calc(100% - 70px);
 }
 
+footer.sticky,
+.footer.sticky,
+.page-footer.sticky {
+  position: relative !important;
+  bottom: auto !important;
+}
+
 
 @keyframes logoPulseGlow {
   0% {

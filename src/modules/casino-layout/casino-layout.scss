@@ -555,4 +555,8 @@ $T: '.tile-container.tile-container';
   }
   #{$S} .tile-container__favorite { width: 34px !important; height: 34px !important; }
   #{$S} .tile-container__favorite svg { width: 22px !important; height: 22px !important; }
+  footer {
+    position: relative !important;
+    bottom: auto !important;
+  }
 }
