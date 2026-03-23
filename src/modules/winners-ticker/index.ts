@@ -166,10 +166,18 @@ export default class WinnersTickerModule extends BaseModule {
   // ── Init / polling ──
 
   private findRef(): { el: HTMLElement; pos: 'before' | 'after' } | null {
-    const mobile = document.querySelector<HTMLElement>('.cl-wrapper.cl-horizontal')
-    if (mobile) return { el: mobile, pos: 'before' }
-    const desktop = document.querySelector<HTMLElement>('header.header-layout')
-    if (desktop) return { el: desktop, pos: 'after' }
+    const isDesktop = window.innerWidth >= 769
+    if (!isDesktop) {
+      const mobile = document.querySelector<HTMLElement>('.cl-wrapper.cl-horizontal')
+      if (mobile) return { el: mobile, pos: 'before' }
+    }
+    const header =
+      document.querySelector<HTMLElement>('header.header-layout') ||
+      document.querySelector<HTMLElement>('.header.header-3') ||
+      document.querySelector<HTMLElement>('.header')
+    if (header) return { el: header, pos: 'after' }
+    const fallback = document.querySelector<HTMLElement>('.cl-wrapper.cl-horizontal')
+    if (fallback) return { el: fallback, pos: 'before' }
     return null
   }
 

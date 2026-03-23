@@ -223,6 +223,8 @@
   color: #ffffff !important;
   line-height: 1.2 !important;
   letter-spacing: 0.01em !important;
+  display: flex !important;
+  align-items: center !important;
 }
 
 .header .balance .balance__main .currency-symbol {
@@ -244,12 +246,12 @@
 
 .header .balance .balance__bonus .balance__text {
   color: rgba(233, 176, 13, 0.6) !important;
-  font-size: 10px !important;
+  font-size: 11px !important;
 }
 
 .header .balance .balance__bonus .balance__amount {
   color: rgba(233, 176, 13, 0.6) !important;
-  font-size: 10px !important;
+  font-size: 11px !important;
 }
 
 .header .balance .balance__bonus .currency-symbol {
