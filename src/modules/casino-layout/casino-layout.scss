@@ -513,6 +513,14 @@ $T: '.tile-container.tile-container';
     width: 40px !important;
     height: 40px !important;
     padding: initial !important;
+    margin-inline-end: initial !important;
+  }
+  .casino-body-class .viewport-height.page__main,
+  .live-casino-body-class .viewport-height.page__main {
+    padding: 0 !important;
+  }
+  #{$S} .tile-container.size-l .tile-container__bg {
+    height: 160px !important;
   }
   #{$S} #{$T}:hover {
     transform: scale(1.03) !important;
