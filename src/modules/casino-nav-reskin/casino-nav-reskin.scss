@@ -555,12 +555,26 @@
   }
 
   .casino-providers {
-    padding: 0 16px 8px !important;
+    padding: 8px 16px !important;
+  }
+
+  .casino-providers__list {
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    overflow-x: visible !important;
+    justify-content: center !important;
+  }
+
+  .casino-providers__list::after {
+    display: none !important;
   }
 
   .casino-providers__item {
-    padding: 6px 14px !important;
+    padding: 8px 18px !important;
     font-size: 12px !important;
+    min-width: 120px !important;
+    text-align: center !important;
+    flex: 0 0 auto !important;
   }
 
   .casino-search {

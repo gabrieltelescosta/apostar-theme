@@ -445,28 +445,32 @@ export default class CasinoLayoutModule extends BaseModule {
 
     let pending = false
     let lastRun = 0
-    const THROTTLE_MS = 300
+    const THROTTLE_MS = 350
+    const obsOpts: MutationObserverInit = {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['src', 'data-src', 'data-image', 'data-lazy', 'data-original', 'style'],
+    }
 
     this.observer = new MutationObserver((mutations) => {
       if (pending) return
       const dominated = mutations.some((m) => m.addedNodes.length > 0 || m.type === 'attributes')
       if (!dominated) return
+      if (!document.querySelector('.tile-container:not([data-ab-layout])')) return
       pending = true
       const elapsed = Date.now() - lastRun
       const wait = Math.max(0, THROTTLE_MS - elapsed)
       setTimeout(() => {
         requestAnimationFrame(() => {
+          this.observer?.disconnect()
           this.enhance()
           lastRun = Date.now()
           pending = false
+          this.observer?.observe(document.documentElement, obsOpts)
         })
       }, wait)
     })
-    this.observer.observe(document.documentElement, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ['src', 'data-src', 'data-image', 'data-lazy', 'data-original', 'style'],
-    })
+    this.observer.observe(document.documentElement, obsOpts)
   }
 }

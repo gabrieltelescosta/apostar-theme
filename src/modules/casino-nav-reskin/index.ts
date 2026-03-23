@@ -65,6 +65,7 @@ export default class CasinoNavReskinModule extends BaseModule {
 
     let iconPending = false
     let debounce: ReturnType<typeof setTimeout>
+    const bodyOpts: MutationObserverInit = { childList: true, subtree: true }
     this.bodyObserver = new MutationObserver(() => {
       if (this.isNormalizing) return
       if (!iconPending) {
@@ -76,15 +77,16 @@ export default class CasinoNavReskinModule extends BaseModule {
       }
       clearTimeout(debounce)
       debounce = setTimeout(() => {
-        injectStyles(styles, 'apw-styles-casino-nav-reskin')
+        this.bodyObserver?.disconnect()
+        if (!document.getElementById('apw-styles-casino-nav-reskin')) {
+          injectStyles(styles, 'apw-styles-casino-nav-reskin')
+        }
         this.normalizeTexts()
         this.stabilizeSearch()
-      }, 200)
+        this.bodyObserver?.observe(document.body, bodyOpts)
+      }, 250)
     })
-    this.bodyObserver.observe(document.body, {
-      childList: true,
-      subtree: true,
-    })
+    this.bodyObserver.observe(document.body, bodyOpts)
   }
 
   private normalizeTexts(): void {
