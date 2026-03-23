@@ -55,6 +55,9 @@ $T: '.tile-container.tile-container';
   display: flex !important;
   grid-template-columns: none !important;
 }
+#{$S} .casino-providers-block .swiper-slide {
+  width: auto !important;
+}
 
 .cl-slider-arrow {
   color: #004786 !important;
