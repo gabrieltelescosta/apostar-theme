@@ -137,7 +137,7 @@
   white-space: nowrap !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
-  max-width: 50px !important;
+  max-width: 100% !important;
   width: 100% !important;
   line-height: 1.2 !important;
   margin-top: 4px !important;
@@ -190,10 +190,15 @@
 
 .casino-providers {
   padding: 0 10px 6px !important;
-  background: linear-gradient(180deg, #004786 0%, #003a6e 100%) !important;
+  background: #004786 !important;
   font-family: 'Jost', 'Open Sans', system-ui, sans-serif !important;
   animation: ab-nav-fade 0.4s ease-out !important;
   position: relative !important;
+}
+
+.casino-providers.navigation-5 .casino-providers__list-dropdown {
+  background: linear-gradient(180deg, #004786 0%, #003a6e 100%) !important;
+  padding: 0 16px 12px !important;
 }
 
 .casino-providers__list {
@@ -532,8 +537,7 @@
   }
 
   .casino-navigation-menu__item-text {
-    font-size: 11px !important;
-    max-width: 64px !important;
+    font-size: 0.7rem !important;
   }
 
   .casino-providers {
@@ -572,6 +576,16 @@
 
   .casino__category__name::before {
     height: 20px !important;
+  }
+
+  .casino-navigation-menu::before,
+  .casino-providers::before {
+    display: none !important;
+  }
+
+  .casino-navigation-menu::after,
+  .casino-providers::after {
+    display: none !important;
   }
 }
 

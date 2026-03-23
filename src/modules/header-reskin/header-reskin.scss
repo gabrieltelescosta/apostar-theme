@@ -5,6 +5,11 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes ab-logo-pulse-no-shadow {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.08); }
+}
+
 .header {
   background: #004786 !important;
   font-family: 'Jost', 'Open Sans', Helvetica, Arial, sans-serif !important;
@@ -23,6 +28,15 @@
 .btn.primary {
   background: linear-gradient(180deg, #ffd474, #f6ad04) !important;
   color: #051932 !important;
+}
+
+.header .header-settings .header__box + .header__box::after {
+  border-left: initial !important;
+}
+
+.header .header-content .header-info__bar,
+.header .header-content .header-info__smartico {
+  border-right: initial !important;
 }
 
 // ── Logged-out buttons ──
@@ -99,6 +113,11 @@
   padding: 8px !important;
   position: relative !important;
   outline: none !important;
+  transition: background-color 0.2s ease !important;
+}
+
+.cl-smartico-inbox-button:hover {
+  background-color: rgba(255, 255, 255, 0.25) !important;
 }
 
 .header .cl-smartico-inbox-button .cl-mail-icon {
@@ -116,6 +135,7 @@
   text-decoration: none !important;
   display: flex !important;
   align-items: center !important;
+  color: #ffffff !important;
 }
 
 .header .balance-container .balance-label {
@@ -136,12 +156,14 @@
 .header .balance-container .balance-currency {
   font-size: 11px !important;
   font-weight: 500 !important;
+  color: #ffffff !important;
   opacity: 0.7 !important;
   margin-right: 2px !important;
 }
 
 .header .balance-container .amount {
   font-weight: 700 !important;
+  color: #ffffff !important;
 }
 
 .header .balance-container .sub-title-small-300-text {
@@ -242,7 +264,7 @@
   }
 
   .header .header-logo .logo img {
-    animation: logoPulseGlow 1.8s ease-in-out infinite !important;
+    animation: ab-logo-pulse-no-shadow 1.8s ease-in-out infinite !important;
     transform-origin: center !important;
   }
 }
