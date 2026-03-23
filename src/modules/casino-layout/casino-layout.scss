@@ -501,10 +501,10 @@ $T: '.tile-container.tile-container';
 
 @media (min-width: 769px) {
   #{$S} .swiper-wrapper {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)) !important;
   }
   #{$S} .infinite-scroll-game-list .tile-games-container {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)) !important;
   }
   #{$S} .casino__category__title {
     font-size: 1rem !important;
