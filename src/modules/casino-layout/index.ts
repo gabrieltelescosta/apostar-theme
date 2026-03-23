@@ -279,6 +279,7 @@ export default class CasinoLayoutModule extends BaseModule {
 
   private injectSeeMoreCards(): void {
     document.querySelectorAll<HTMLElement>('[data-ab-casino] .swiper-wrapper').forEach((grid) => {
+      if (grid.closest('.casino-providers-block')) return
       if (grid.querySelector('.ab-see-more-card')) return
       const section = grid.closest('.swiper-container, .swiper') || grid.parentElement
       if (!section) return

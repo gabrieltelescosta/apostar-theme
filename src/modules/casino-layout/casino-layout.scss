@@ -50,6 +50,19 @@ $T: '.tile-container.tile-container';
   flex-shrink: 0 !important;
 }
 
+// ── 0c. Exclude providers block from grid ──
+#{$S} .casino-providers-block .swiper-wrapper {
+  display: flex !important;
+  grid-template-columns: none !important;
+}
+#{$S} .casino-providers-block .swiper-slide {
+  width: auto !important;
+}
+
+.cl-slider-arrow {
+  color: #004786 !important;
+}
+
 // ── 1. Tile card ──
 #{$S} #{$T} {
   --min-size: unset !important;
@@ -531,6 +544,10 @@ $T: '.tile-container.tile-container';
   }
   #{$S} .chips-item.casino__category__slider-arrow {
     display: none !important;
+  }
+  #{$S} .casino__category__header .chips-item .chips-item__label,
+  #{$S} .casino__category__title__view {
+    font-size: 0.8rem !important;
   }
   .casino .casino__sliders > .casino__winners + .slider,
   .casino-home .casino__sliders > .casino__winners + .slider {
