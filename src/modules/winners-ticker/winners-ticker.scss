@@ -74,3 +74,75 @@ $scope: '.game-item-wrapper';
     height: 40px !important;
   }
 }
+
+// ── Desktop: .casino__winners ──
+
+$desktop: '.casino__winners';
+
+#{$desktop} {
+  font-family: 'Jost', sans-serif;
+}
+
+#{$desktop} .casino-winner {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 8px 12px !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  border-radius: 10px !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+#{$desktop} .casino-winner__img {
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 8px !important;
+  flex-shrink: 0 !important;
+  border: 1.5px solid rgba(233, 176, 13, 0.25) !important;
+  object-fit: cover !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+#{$desktop} .casino-winner__info {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+  min-width: 0 !important;
+  font-family: 'Jost', sans-serif !important;
+}
+
+#{$desktop} .casino-winner__title {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+#{$desktop} .casino-winner-text {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  white-space: nowrap !important;
+}
+
+#{$desktop} .casino-winner-text__inner:nth-child(2) span {
+  color: rgba(255, 255, 255, 0.5) !important;
+  font-size: 11px !important;
+}
+
+#{$desktop} .casino-winner-text__inner:last-child {
+  color: #e9b00d !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+}
+
+#{$desktop} .casino-winner__game {
+  font-size: 10px !important;
+  color: rgba(255, 255, 255, 0.4) !important;
+  font-weight: 400 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
