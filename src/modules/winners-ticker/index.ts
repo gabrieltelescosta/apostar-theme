@@ -205,8 +205,13 @@ export default class WinnersTickerModule extends BaseModule {
     const cardsHTML = data.map((item) => this.buildCardHTML(item)).join('')
     this.singleSetHTML = cardsHTML
 
-    const existing = document.querySelector<HTMLElement>(`.${CONTAINER_CLASS}`)
+    let existing = document.querySelector<HTMLElement>(`.${CONTAINER_CLASS}`)
     const hash = cardsHTML.length + ':' + (data[0]?.info.login ?? '')
+
+    if (existing && !existing.isConnected) {
+      existing.remove()
+      existing = null
+    }
 
     if (existing) {
       if (hash !== this.lastDataHash) {
@@ -284,10 +289,9 @@ export default class WinnersTickerModule extends BaseModule {
         domWatcher.unregister(this.name)
         return
       }
-      if (document.querySelector(`.${CONTAINER_CLASS}`)) {
-        domWatcher.unregister(this.name)
-        return
-      }
+      const existing = document.querySelector<HTMLElement>(`.${CONTAINER_CLASS}`)
+      if (existing && existing.isConnected) return
+      if (existing) existing.remove()
       const ref = this.findRef()
       if (ref) this.fetchWinners((data) => this.renderTicker(ref.el, ref.pos, data))
     }, 40)
@@ -298,6 +302,8 @@ export default class WinnersTickerModule extends BaseModule {
         this.pollTimer = null
         return
       }
+      const existing = document.querySelector<HTMLElement>(`.${CONTAINER_CLASS}`)
+      if (existing && !existing.isConnected) existing.remove()
       const ref = this.findRef()
       if (!ref) return
       this.fetchWinners((data) => this.renderTicker(ref.el, ref.pos, data))
