@@ -1,4 +1,5 @@
 import { widgetGuard } from './widget-guard'
+import { logger } from './logger'
 
 type WatcherCallback = () => void
 
@@ -11,10 +12,14 @@ class DOMWatcher {
   private observer: MutationObserver | null = null
   private entries = new Map<string, WatcherEntry>()
   private pending = false
+  private queued = false
   private lastRun = 0
   private started = false
 
-  private static readonly THROTTLE_MS = 500
+  private static readonly THROTTLE_MS = 750
+  private static readonly DOM_WARN_THRESHOLD = 15000
+  private static readonly DOM_NUKE_THRESHOLD = 25000
+  private lastDomCheck = 0
 
   private static readonly OPTS: MutationObserverInit = {
     childList: true,
@@ -46,10 +51,16 @@ class DOMWatcher {
     this.observer = null
     this.started = false
     this.pending = false
+    this.queued = false
   }
 
   private handle(): void {
-    if (this.pending || widgetGuard.isNuked) return
+    if (widgetGuard.isNuked) return
+
+    if (this.pending) {
+      this.queued = true
+      return
+    }
     this.pending = true
 
     const elapsed = Date.now() - this.lastRun
@@ -76,8 +87,27 @@ class DOMWatcher {
         this.lastRun = Date.now()
         this.pending = false
 
+        if (this.lastRun - this.lastDomCheck > 5000) {
+          this.lastDomCheck = this.lastRun
+          const nodeCount = document.querySelectorAll('*').length
+          if (nodeCount > DOMWatcher.DOM_NUKE_THRESHOLD) {
+            logger.warn(`[DOMWatcher] DOM node count ${nodeCount} exceeds nuke threshold. Nuking.`)
+            widgetGuard.nuke()
+            this.stop()
+            return
+          }
+          if (nodeCount > DOMWatcher.DOM_WARN_THRESHOLD) {
+            logger.warn(`[DOMWatcher] High DOM node count: ${nodeCount}`)
+          }
+        }
+
         if (this.started && this.observer) {
           this.observer.observe(document.documentElement, DOMWatcher.OPTS)
+        }
+
+        if (this.queued) {
+          this.queued = false
+          this.handle()
         }
       })
     }, wait)

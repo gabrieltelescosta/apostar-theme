@@ -25,11 +25,7 @@
     },
     {
       "type": "winners-ticker",
-      "data": {
-        "apiUrl": "/api/gs/lastWinnings:list",
-        "iconCdn": "https://media.pl-01.cdn-platform.com/games/",
-        "pollInterval": 15000
-      }
+      "data": {}
     },
     {
       "type": "casino-filters",

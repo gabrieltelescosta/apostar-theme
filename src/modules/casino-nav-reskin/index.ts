@@ -43,6 +43,8 @@ export default class CasinoNavReskinModule extends BaseModule {
 
   // ── Private ──
 
+  private iconsComplete = false
+
   private start(): void {
     this.normalizeTexts()
     this.replaceNavIcons()
@@ -54,7 +56,7 @@ export default class CasinoNavReskinModule extends BaseModule {
       if (!document.getElementById('apw-styles-casino-nav-reskin')) {
         injectStyles(styles, 'apw-styles-casino-nav-reskin')
       }
-      this.replaceNavIcons()
+      if (!this.iconsComplete) this.replaceNavIcons()
       this.normalizeTexts()
       this.stabilizeSearch()
     }, 10)
@@ -158,12 +160,15 @@ export default class CasinoNavReskinModule extends BaseModule {
   }
 
   private replaceNavIcons(): void {
+    let pending = 0
+    let replaced = 0
     document.querySelectorAll<HTMLElement>('.casino-navigation-menu__item').forEach((item) => {
       const dataId = item.getAttribute('data-id')
       if (!dataId || !this.NAV_ICON_MAP[dataId]) return
       const iconWrap = item.querySelector<HTMLElement>('.casino-navigation-menu__item-icon')
       if (!iconWrap) return
-      if (iconWrap.querySelector('img')) return
+      if (iconWrap.querySelector('img')) { replaced++; return }
+      pending++
       const svg = iconWrap.querySelector('svg')
       if (!svg) return
       const img = document.createElement('img')
@@ -172,6 +177,9 @@ export default class CasinoNavReskinModule extends BaseModule {
       img.loading = 'eager'
       img.style.cssText = 'width:22px;height:22px;object-fit:contain;'
       svg.parentNode?.replaceChild(img, svg)
+      replaced++
+      pending--
     })
+    if (replaced > 0 && pending === 0) this.iconsComplete = true
   }
 }

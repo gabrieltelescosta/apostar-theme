@@ -363,11 +363,18 @@ export default class CasinoLayoutModule extends BaseModule {
 
   // ── Main enhance ──
 
+  private lastEnhance = 0
+
   private enhance(): boolean {
+    const now = Date.now()
+    if (now - this.lastEnhance < 1000) return false
+
     const hasNewTiles = document.querySelector('.tile-container:not([data-ab-layout])')
     if (!hasNewTiles && document.querySelector('[data-ab-casino]')) {
       return false
     }
+
+    this.lastEnhance = now
 
     let found = false
 
