@@ -43,8 +43,6 @@ export default class CasinoNavReskinModule extends BaseModule {
 
   // ── Private ──
 
-  private iconsComplete = false
-
   private start(): void {
     this.normalizeTexts()
     this.replaceNavIcons()
@@ -56,7 +54,7 @@ export default class CasinoNavReskinModule extends BaseModule {
       if (!document.getElementById('apw-styles-casino-nav-reskin')) {
         injectStyles(styles, 'apw-styles-casino-nav-reskin')
       }
-      if (!this.iconsComplete) this.replaceNavIcons()
+      this.replaceNavIcons()
       this.normalizeTexts()
       this.stabilizeSearch()
     }, 10)
@@ -180,6 +178,5 @@ export default class CasinoNavReskinModule extends BaseModule {
       replaced++
       pending--
     })
-    if (replaced > 0 && pending === 0) this.iconsComplete = true
   }
 }
