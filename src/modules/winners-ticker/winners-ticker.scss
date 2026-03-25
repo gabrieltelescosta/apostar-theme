@@ -109,6 +109,7 @@ $desktop: '.casino__winners';
   gap: 2px !important;
   min-width: 0 !important;
   font-family: 'Jost', sans-serif !important;
+  background-color: initial !important;
 }
 
 #{$desktop} .casino-winner__title {
