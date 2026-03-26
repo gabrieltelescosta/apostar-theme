@@ -31,6 +31,7 @@ if (window.__APW_INIT) {
   moduleRegistry.register('cashback-bar',      () => import('./modules/cashback-bar/index'))
   moduleRegistry.register('footer-reskin',    () => import('./modules/footer-reskin/index'))
   moduleRegistry.register('static-content',   () => import('./modules/static-content/index'))
+  moduleRegistry.register('switch-toggle-hide', () => import('./modules/switch-toggle-hide/index'))
 
   window.ApostarWidget = {
     destroy: destroyAll,

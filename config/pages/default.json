@@ -24,6 +24,10 @@
       "data": {}
     },
     {
+      "type": "switch-toggle-hide",
+      "data": {}
+    },
+    {
       "type": "winners-ticker",
       "data": {}
     },
