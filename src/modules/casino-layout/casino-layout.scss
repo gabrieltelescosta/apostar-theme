@@ -379,12 +379,8 @@ $T: '.tile-container.tile-container';
 
   &:hover { background: rgba(233, 176, 13, 0.1) !important; border-color: rgba(233, 176, 13, 0.5) !important; box-shadow: 0 0 8px rgba(233, 176, 13, 0.15) !important; }
 }
-#{$S} .casino__category__view-all [data-ab-header='link'] {
-  background: none !important;
-  border: none !important;
-  padding: 0 !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
+#{$S}#{$S} [data-ab-header='link'] {
+  color: #051932 !important;
 }
 
 #{$S} [data-ab-header='wrapper'] {
@@ -556,8 +552,9 @@ $T: '.tile-container.tile-container';
   #{$S} .casino__category__title__view {
     font-size: 0.8rem !important;
   }
-  .casino__sliders {
-    margin-top: 10px !important;
+  .casino .casino__sliders > .casino__winners + .slider,
+  .casino-home .casino__sliders > .casino__winners + .slider {
+    width: 100% !important;
   }
   #{$S} .tile-container__favorite { width: 34px !important; height: 34px !important; }
   #{$S} .tile-container__favorite svg { width: 22px !important; height: 22px !important; }
