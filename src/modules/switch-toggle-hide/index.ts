@@ -36,7 +36,9 @@ export default class SwitchToggleHideModule extends BaseModule {
 
   private applyFix(): void {
     document.querySelectorAll<HTMLElement>('.switch-button-toggle').forEach((el) => {
-      el.classList.remove('active')
+      if (el.classList.contains('active')) {
+        el.click()
+      }
       el.style.setProperty('display', 'none', 'important')
     })
   }
