@@ -2,11 +2,49 @@
   "page": "default",
   "modules": [
     {
+      "type": "loading-screen",
+      "data": {
+        "logoSrc": "https://media.pl-01.cdn-platform.com/cms/sites/image-1747145012195681.webp"
+      }
+    },
+    {
       "type": "css-vars",
       "data": {}
     },
     {
       "type": "header-reskin",
+      "data": {}
+    },
+    {
+      "type": "casino-nav-reskin",
+      "data": {}
+    },
+    {
+      "type": "casino-layout",
+      "data": {}
+    },
+    {
+      "type": "switch-toggle-hide",
+      "data": {}
+    },
+    {
+      "type": "winners-ticker",
+      "data": {}
+    },
+    {
+      "type": "casino-filters",
+      "data": {}
+    },
+    {
+      "type": "providers-block",
+      "data": {}
+    },
+    {
+      "type": "footer-reskin",
+      "data": {}
+    },
+    {
+      "type": "static-content",
       "data": {}
     }
   ]
