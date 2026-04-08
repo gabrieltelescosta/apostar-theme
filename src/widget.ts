@@ -1,10 +1,16 @@
 import { bootstrap, destroyAll } from './core/bootstrap'
 import { moduleRegistry } from './core/module-registry'
 import { eventBus } from './core/event-bus'
+import './utils/sounds'
+import './utils/confetti'
+import type { sounds } from './utils/sounds'
+import type { ConfettiOptions } from './utils/confetti'
 
 declare global {
   interface Window {
     __APW_INIT?: boolean
+    __abSounds: typeof sounds
+    apostarConfetti: (opts?: ConfettiOptions) => void
     ApostarWidget: {
       destroy: typeof destroyAll
       events: typeof eventBus
