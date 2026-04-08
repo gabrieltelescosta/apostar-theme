@@ -1,7 +1,6 @@
 import { bootstrap, destroyAll } from './core/bootstrap'
 import { moduleRegistry } from './core/module-registry'
 import { eventBus } from './core/event-bus'
-import { apostarMoney } from './utils/money-rain'
 
 declare global {
   interface Window {
@@ -28,8 +27,6 @@ if (window.__APW_INIT) {
     events: eventBus,
     registry: moduleRegistry,
   }
-
-  window.apostarMoney = apostarMoney
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => bootstrap())
