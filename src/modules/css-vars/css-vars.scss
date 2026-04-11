@@ -40,4 +40,7 @@ footer.sticky,
 }
 
 .popup.popup-z-index.casino-game { display: none!important; }
-.web-client-container { top: 120px !important; right: -10px !important; }
+
+@media (max-width: 768px) {
+  .web-client-container { top: 120px !important; right: -10px !important; }
+}
