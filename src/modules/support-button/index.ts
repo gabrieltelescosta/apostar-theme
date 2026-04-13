@@ -1,5 +1,6 @@
 import { BaseModule } from '../base-module'
 import type { ModuleEntry } from '../../types/config'
+import { logger } from '../../core/logger'
 import { injectStyles } from '../../utils/dom'
 import styles from './support-button.scss?inline'
 
@@ -21,7 +22,7 @@ const IDS = {
   moveoScript: 'moveo-sdk-script-v2',
 } as const
 
-const DRAG_THRESHOLD = 8
+const DRAG_THRESHOLD = 12
 const MARGIN = 20
 const STORAGE_KEY = 'moveo_draggable_button_position_v2'
 
@@ -66,7 +67,9 @@ export default class SupportButtonModule extends BaseModule {
   selfManaged = true
 
   private button: HTMLButtonElement | null = null
-  private moveo: MoveoInstance | null = null
+  private moveoResolved: MoveoInstance | null = null
+  private moveoPromise: Promise<MoveoInstance> | null = null
+
   private isPointerDown = false
   private isDragging = false
   private startX = 0
@@ -75,7 +78,8 @@ export default class SupportButtonModule extends BaseModule {
   private startTop = 0
 
   private boundPointerMove = this.onPointerMove.bind(this)
-  private boundPointerUp = this.onPointerUp.bind(this)
+  private boundPointerUp = (e: PointerEvent) => { void this.handlePointerUpAsync(e) }
+  private boundPointerCancel = this.handlePointerCancel.bind(this)
   private boundResize = this.onResize.bind(this)
 
   async init(config: ModuleEntry): Promise<void> {
@@ -93,7 +97,10 @@ export default class SupportButtonModule extends BaseModule {
     this.button = this.createButton()
     this.restorePosition()
     this.bindEvents()
-    await this.initMoveo()
+
+    void this.ensureMoveo().catch((err) => {
+      logger.error('[support-button] Background Moveo init failed:', err)
+    })
   }
 
   protected template(): string {
@@ -105,10 +112,18 @@ export default class SupportButtonModule extends BaseModule {
   destroy(): void {
     window.removeEventListener('pointermove', this.boundPointerMove)
     window.removeEventListener('pointerup', this.boundPointerUp)
+    window.removeEventListener('pointercancel', this.boundPointerCancel)
     window.removeEventListener('resize', this.boundResize)
+
+    if (this.button) {
+      this.button.removeEventListener('pointerup', this.boundPointerUp)
+      this.button.removeEventListener('pointercancel', this.boundPointerCancel)
+    }
+
     this.button?.remove()
     this.button = null
-    this.moveo = null
+    this.moveoResolved = null
+    this.moveoPromise = null
   }
 
   private createButton(): HTMLButtonElement {
@@ -126,8 +141,12 @@ export default class SupportButtonModule extends BaseModule {
     if (!this.button) return
 
     this.button.addEventListener('pointerdown', (e) => this.onPointerDown(e))
+    this.button.addEventListener('pointerup', this.boundPointerUp)
+    this.button.addEventListener('pointercancel', this.boundPointerCancel)
+
     window.addEventListener('pointermove', this.boundPointerMove)
     window.addEventListener('pointerup', this.boundPointerUp)
+    window.addEventListener('pointercancel', this.boundPointerCancel)
     window.addEventListener('resize', this.boundResize)
   }
 
@@ -161,7 +180,7 @@ export default class SupportButtonModule extends BaseModule {
     this.applyPosition(this.startLeft + dx, this.startTop + dy)
   }
 
-  private onPointerUp(e: PointerEvent): void {
+  private async handlePointerUpAsync(e: PointerEvent): Promise<void> {
     if (!this.isPointerDown || !this.button) return
 
     this.isPointerDown = false
@@ -175,9 +194,22 @@ export default class SupportButtonModule extends BaseModule {
       return
     }
 
-    if (this.moveo) {
-      this.moveo.openWindow()
+    try {
+      const instance = await this.ensureMoveo()
+      instance.openWindow()
+    } catch (err) {
+      logger.error('[support-button] Failed to open Moveo:', err)
     }
+  }
+
+  private handlePointerCancel(e: PointerEvent): void {
+    if (!this.isPointerDown || !this.button) return
+
+    this.isPointerDown = false
+    this.isDragging = false
+    this.button.classList.remove('is-dragging')
+
+    try { this.button.releasePointerCapture(e.pointerId) } catch { /* noop */ }
   }
 
   private onResize(): void {
@@ -212,18 +244,37 @@ export default class SupportButtonModule extends BaseModule {
     } catch { /* corrupted data, ignore */ }
   }
 
-  private async initMoveo(): Promise<void> {
-    const integrationId = this.data<string>('integrationId', 'b41604ae-2744-430f-b8e6-522c65889b4f')
+  private ensureMoveo(): Promise<MoveoInstance> {
+    if (this.moveoResolved) return Promise.resolve(this.moveoResolved)
+    if (!this.moveoPromise) {
+      this.moveoPromise = this.bootstrapMoveo()
+    }
+    return this.moveoPromise
+  }
 
-    await loadScript('https://cdn.moveo.ai/webclient/v2/moveo.min.js', IDS.moveoScript)
+  private async bootstrapMoveo(): Promise<MoveoInstance> {
+    try {
+      const integrationId = this.data<string>('integrationId', 'b41604ae-2744-430f-b8e6-522c65889b4f')
 
-    if (window.MoveoAI) {
-      this.moveo = await window.MoveoAI.init({
+      await loadScript('https://cdn.moveo.ai/webclient/v2/moveo.min.js', IDS.moveoScript)
+
+      if (!window.MoveoAI) {
+        throw new Error('MoveoAI is undefined after loading moveo.min.js')
+      }
+
+      const instance = await window.MoveoAI.init({
         integrationId,
         version: 'v2',
         launcher: { show: false },
         language: 'pt-br',
       })
+
+      this.moveoResolved = instance
+      return instance
+    } catch (err) {
+      logger.error('[support-button] Moveo init failed:', err)
+      this.moveoPromise = null
+      throw err
     }
   }
 }
