@@ -12,12 +12,6 @@
     {
       "type": "switch-toggle-hide",
       "data": {}
-    },
-    {
-      "type": "support-button",
-      "data": {
-        "integrationId": "b41604ae-2744-430f-b8e6-522c65889b4f"
-      }
     }
   ]
 }
