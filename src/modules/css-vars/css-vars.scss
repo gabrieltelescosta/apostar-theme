@@ -41,6 +41,4 @@ footer.sticky,
 
 .popup.popup-z-index.casino-game { display: none!important; }
 
-@media (max-width: 768px) {
-  .web-client-container { top: 190px !important; }
-}
+.web-client-container { display: none!important; }

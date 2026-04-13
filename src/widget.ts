@@ -27,6 +27,7 @@ if (window.__APW_INIT) {
   moduleRegistry.register('css-vars',           () => import('./modules/css-vars/index'))
   moduleRegistry.register('header-reskin',      () => import('./modules/header-reskin/index'))
   moduleRegistry.register('switch-toggle-hide', () => import('./modules/switch-toggle-hide/index'))
+  moduleRegistry.register('support-button',     () => import('./modules/support-button/index'))
 
   window.ApostarWidget = {
     destroy: destroyAll,

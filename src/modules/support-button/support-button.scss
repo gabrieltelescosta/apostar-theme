@@ -1,0 +1,50 @@
+$button-size: 52px;
+$margin: 20px;
+$primary: #004785;
+$z-index: 999999;
+
+#moveo-custom-support-button-v2 {
+  position: fixed;
+  width: $button-size;
+  height: $button-size;
+  left: auto;
+  top: auto;
+  right: $margin;
+  bottom: $margin;
+  border: 0;
+  border-radius: 999px;
+  background: $primary;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  z-index: $z-index;
+  box-shadow: 0 12px 28px rgba(0, 71, 133, 0.28);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, opacity 0.22s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  padding: 0;
+
+  &:hover {
+    transform: scale(1.08);
+    box-shadow: 0 18px 34px rgba(0, 71, 133, 0.36);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &.is-dragging {
+    transition: none;
+    cursor: grabbing;
+    opacity: 0.96;
+  }
+
+  i {
+    font-size: 22px;
+    line-height: 1;
+    pointer-events: none;
+  }
+}
