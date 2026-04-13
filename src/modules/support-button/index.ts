@@ -25,6 +25,9 @@ const IDS = {
 const DRAG_THRESHOLD = 12
 const MARGIN = 20
 const STORAGE_KEY = 'moveo_draggable_button_position_v2'
+const TOOLTIP_KEY = 'moveo_tooltip_shown'
+const TOOLTIP_VISIBLE_MS = 4000
+const TOOLTIP_FADEOUT_MS = 400
 
 function loadCss(href: string, id: string): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -132,9 +135,29 @@ export default class SupportButtonModule extends BaseModule {
     btn.type = 'button'
     btn.setAttribute('aria-label', 'Abrir suporte')
     btn.setAttribute('title', 'Suporte')
-    btn.innerHTML = '<i class="bi bi-chat-dots-fill" aria-hidden="true"></i>'
+    btn.innerHTML =
+      '<i class="bi bi-chat-dots-fill" aria-hidden="true"></i>' +
+      '<i class="bi bi-grip-vertical moveo-grip" aria-hidden="true"></i>'
     document.body.appendChild(btn)
+    this.showTooltip(btn)
     return btn
+  }
+
+  private showTooltip(btn: HTMLButtonElement): void {
+    try {
+      if (localStorage.getItem(TOOLTIP_KEY)) return
+      localStorage.setItem(TOOLTIP_KEY, '1')
+    } catch { return }
+
+    const tip = document.createElement('span')
+    tip.className = 'moveo-tooltip'
+    tip.textContent = 'Precisa de ajuda?'
+    btn.appendChild(tip)
+
+    setTimeout(() => {
+      tip.classList.add('fade-out')
+      setTimeout(() => tip.remove(), TOOLTIP_FADEOUT_MS)
+    }, TOOLTIP_VISIBLE_MS)
   }
 
   private bindEvents(): void {
