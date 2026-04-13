@@ -256,7 +256,7 @@ export default class SupportButtonModule extends BaseModule {
     try {
       const integrationId = this.data<string>('integrationId', 'b41604ae-2744-430f-b8e6-522c65889b4f')
 
-      await loadScript('https://cdn.moveo.ai/webclient/v2/moveo.min.js', IDS.moveoScript)
+      await loadScript('https://web.moveo.ai/web-client.min.js', IDS.moveoScript)
 
       if (!window.MoveoAI) {
         throw new Error('MoveoAI is undefined after loading moveo.min.js')
